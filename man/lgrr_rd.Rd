@@ -6,7 +6,10 @@ Min Lu
 }
 \usage{
 lgrr_rd(r, n1c, n2c, n1t, n2t,
-        n12c = min(n1c, n2c),n12t = min(n1t, n2t),
+        n12c = min(n1c, n2c),
+        n12t = min(n1t, n2t),
+        s2c, s2t, f2c, f2t,
+        s1c, s1t, f1c, f1t)
 }
 \description{
 Compute covariance between log risk ratio and risk difference, when the two outcomes are binary.

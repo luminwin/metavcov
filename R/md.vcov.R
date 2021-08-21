@@ -1,11 +1,11 @@
 md.vcov <- function(r, nt, nc, n_rt = 0, n_rc = 0, sdt, sdc)
-{
+{ K <- length(r)
   if (length(as.vector(nt)) == length(as.matrix(nt)[, 1]))    {colum.number <- 1}    else    {      colum.number <- ncol(nt)}
   col.vac.number <- (colum.number + 1)*colum.number/2
   if (sum(unlist(n_rt)) == 0){
     n_rt <- list()
     for (k in 1:K)
-    {      temp <- diag(colum.number)
+    { temp <- diag(colum.number)
     for (i in 1:colum.number){
       for (j in 1:colum.number){
         temp[i,j] <- min(nt[k, i], nt[k, j])
@@ -17,7 +17,7 @@ md.vcov <- function(r, nt, nc, n_rt = 0, n_rc = 0, sdt, sdc)
   if (sum(unlist(n_rc)) == 0){
     n_rc <- list()
     for (k in 1:K)
-    {temp <- diag(colum.number)
+    {print(k); temp <- diag(colum.number)
     for (i in 1:colum.number){
       for (j in 1:colum.number){
         temp[i, j] <- min(nc[k, i], nc[k, j])}

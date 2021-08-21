@@ -1,0 +1,31 @@
+citHeader("To cite metavcov in publications use:")
+
+titl <- meta$Title
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste("R package version", meta$Version)
+
+citEntry(entry="Manual",
+         title = titl,
+         author = personList(person(family="Lu", given="M.")),
+	 publisher = "manual",
+         year         = year,
+         note         = vers,
+         url          = "https://cran.r-project.org/package=metavcov",
+         pdf          = "https://cran.r-project.org/web/packages/metavcov/metavcov.pdf",
+         textVersion =
+         paste("Lu M. (",year ,"). ",
+               titl, ", ", vers, ".", sep=""))
+
+citEntry(entry="inbook",
+         title  = "Application of Meta-Analysis in Sport and Exercise Science",
+         author =  "Ahn, S and Lu, M and Lefevor, GT and Fedewa, AL and Celimli, S",
+	 booktitle     = "An introduction to intermediate and advanced statistical analyses for sport and exercise scientists",
+	 editor      = "Nikos Ntoumanis and Nicholas D. Myers",
+         year         = "2015",
+         pages        = "233--253",
+         publisher  = "John Wiley & Sons",
+         url          = "https://bcs.wiley.com/he-bcs/Books?action=index&bcsId=9985&itemId=1118962052",
+
+         textVersion =
+         paste("Ahn S., Lu M., Lefevor G. T., Fedewa A.L., and Celimli S. (2015). Application of Meta-Analysis inSport and Exercise Science. In Ntoumanis N. and Myers N.D. (Eds.), An introduction to intermediateand advanced statistical analyses for sport and exercise scientists (pp. 233-253). John Wiley & Sons.",
+               sep=""))

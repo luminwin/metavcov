@@ -45,7 +45,7 @@ lgor_lgrr <- function(r, n1c, n2c, n1t, n2t, n12c = min(n1c,n2c), n12t = min(n1t
 lgor_rd <- function(r, n1c, n2c, n1t, n2t, n12c = min(n1c, n2c), n12t = min(n1t, n2t), s2c, s2t, f2c, f2t, s1c, s1t, f1t, f1c) {
   r*n12c*sqrt((s2c*f2c/s1c/f1c)*f2c/s2c)/n1c/n2c + r*n12t*sqrt((s2t*f2t/s1t/f1t)*f2t/s2t)/n1t/n2t }
 
-lgrr_rd <- function(r, n1c, n2c, n1t, n2t, n12c = min(n1c, n2c), n12t = min(n1t, n2t), s2c, s2t, f2c, f2t, s1c, s1t, f1t, f1c) {
+lgrr_rd <- function(r, n1c, n2c, n1t, n2t, n12c = min(n1c, n2c), n12t = min(n1t, n2t), s2c, s2t, f2c, f2t, s1c, s1t, f1c, f1t) {
   r*n12c*sqrt((f1c*s2c*f2c/s1c)*f2c/s2c)/n1c/(n2c^2) + r*n12t*sqrt((f1t*s2t*f2t/s1t)*f2t/s2t)/n1t/(n2t^2)  }
 
 
