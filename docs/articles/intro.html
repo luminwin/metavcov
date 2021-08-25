@@ -164,54 +164,159 @@ font-size: 16px;
 <p>In this vignette, we will provide a general sense of the package. We will briefly go over the main functions and outputs using correlation effect sizes.</p>
 <p>First, Let’s load the <code>metavcov</code> package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/luminwin/metavcov">"metavcov"</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Craft2003</span><span class="op">)</span>
-  <span class="co">#extract correlation from the dataset (craft)</span>
-  <span class="va">corflat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Craft2003</span>, select<span class="op">=</span><span class="va">C1</span><span class="op">:</span><span class="va">C6</span><span class="op">)</span>
-  <span class="co"># transform correlations to z and compute variance-covariance matrix.</span>
-  <span class="va">computvocv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/r.vcov.html">r.vcov</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">Craft2003</span><span class="op">$</span><span class="va">N</span>, corflat <span class="op">=</span> <span class="va">corflat</span>, method <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span>
-  <span class="co"># name transformed z scores as an input</span>
-  <span class="va">Input</span> <span class="op">&lt;-</span> <span class="va">computvocv</span><span class="op">$</span><span class="va">zr</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">Input</span><span class="op">)</span></code></pre></div>
-<pre><code>&gt;          C1         C2         C3          C4          C5          C6
-&gt; 1 0.2447741 -0.4236489 -0.3540925 -0.17166666  0.08017133  0.21317135
-&gt; 2 0.4476920 -0.4476920 -0.5229843 -0.08017133  0.17166666 -0.12058103
-&gt; 3 0.3428283 -0.1923372 -0.6776661 -0.14092558 -0.11044692  0.09024419
-&gt; 4 0.2152645 -0.6098195 -0.4611242 -0.41297996 -0.16755048  0.19337483
-&gt; 5 0.5100703 -0.3884231 -0.5493061  0.10033535  0.32054541 -0.17166666
-&gt; 6 0.8107431 -0.3768859 -0.9076450 -0.15114044 -0.42364893  0.36544375</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># name variance-covariance matrix of trnasformed z scores as covars</span>
-  <span class="va">covars</span> <span class="op">&lt;-</span> <span class="va">computvocv</span><span class="op">$</span><span class="va">zcov</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">covars</span><span class="op">)</span></code></pre></div>
-<pre><code>&gt;            [,1]         [,2]        [,3]         [,4]         [,5]
-&gt; [1,] 0.04761905 0.0003351688 0.002138113 -0.010579071 -0.013761771
-&gt; [2,] 0.04166667 0.0002979278 0.001900545 -0.009403618 -0.012232685
-&gt; [3,] 0.03703704 0.0002681350 0.001710490 -0.008463256 -0.011009417
-&gt; [4,] 0.09090909 0.0005745750 0.003665336 -0.018135549 -0.023591607
-&gt; [5,] 0.02380952 0.0001787567 0.001140327 -0.005642171 -0.007339611
-&gt; [6,] 0.04761905 0.0003351688 0.002138113 -0.010579071 -0.013761771
-&gt;               [,6]       [,7]        [,8]       [,9]       [,10]        [,11]
-&gt; [1,] -0.0011673589 0.04761905 0.003998742 0.02506561 0.002305253 -0.013540829
-&gt; [2,] -0.0010376523 0.04166667 0.003554437 0.02228054 0.002049114 -0.012036292
-&gt; [3,] -0.0009338871 0.03703704 0.003198993 0.02005248 0.001844203 -0.010832663
-&gt; [4,] -0.0020011867 0.09090909 0.006854986 0.04296961 0.003951863 -0.023212849
-&gt; [5,] -0.0006225914 0.02380952 0.002132662 0.01336832 0.001229468 -0.007221775
-&gt; [6,] -0.0011673589 0.04761905 0.003998742 0.02506561 0.002305253 -0.013540829
-&gt;           [,12]       [,13]      [,14]        [,15]      [,16]       [,17]
-&gt; [1,] 0.04761905 0.001963746 0.02512404 -0.010480026 0.04761905 0.005879878
-&gt; [2,] 0.04166667 0.001745552 0.02233248 -0.009315578 0.04166667 0.005226558
-&gt; [3,] 0.03703704 0.001570997 0.02009923 -0.008384021 0.03703704 0.004703902
-&gt; [4,] 0.09090909 0.003366422 0.04306978 -0.017965758 0.09090909 0.010079791
-&gt; [5,] 0.02380952 0.001047331 0.01339949 -0.005589347 0.02380952 0.003135935
-&gt; [6,] 0.04761905 0.001963746 0.02512404 -0.010480026 0.04761905 0.005879878
-&gt;              [,18]      [,19]        [,20]      [,21]
-&gt; [1,] -0.0017802532 0.04761905 -0.002948570 0.04761905
-&gt; [2,] -0.0015824473 0.04166667 -0.002620951 0.04166667
-&gt; [3,] -0.0014242026 0.03703704 -0.002358856 0.03703704
-&gt; [4,] -0.0030518626 0.09090909 -0.005054692 0.09090909
-&gt; [5,] -0.0009494684 0.02380952 -0.001572571 0.02380952
-&gt; [6,] -0.0017802532 0.04761905 -0.002948570 0.04761905</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/luminwin/metavcov">"metavcov"</a></span><span class="op">)</span></code></pre></div>
+<p>As a quick start, let’s use the data in <span class="citation">Craft et al. (2003)</span> (see <code><a href="../reference/Craft2003.html">Craft2003()</a></code>) as an example, which examined the interrelationships between athletic performance and three subscales, cognitive anxiety, somatic anxiety, and self-concept from 18 studies. Since we have four outcomes, we have six (<code><a href="https://rdrr.io/r/utils/combn.html">combn(4,2)</a></code>) combinations of correlations among them, which are listed as C1-C6 in the dataset:</p>
+<table class="table">
+<colgroup>
+<col width="18%">
+<col width="81%">
+</colgroup>
+<thead><tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>ID</td>
+<td>ID for each study included</td>
+</tr>
+<tr class="even">
+<td>N</td>
+<td>Sample size from each study included</td>
+</tr>
+<tr class="odd">
+<td>gender</td>
+<td>Gender</td>
+</tr>
+<tr class="even">
+<td>p_male</td>
+<td>Percentage of male</td>
+</tr>
+<tr class="odd">
+<td>C1</td>
+<td>Correlation coefficient between cognitive anxiety and somatic anxiety</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td>Correlation coefficient between cognitive anxiety and self concept</td>
+</tr>
+<tr class="odd">
+<td>C3</td>
+<td>Correlation coefficient between cognitive anxiety and athletic performance</td>
+</tr>
+<tr class="even">
+<td>C4</td>
+<td>Correlation coefficient between somatic anxiety and self concept</td>
+</tr>
+<tr class="odd">
+<td>C5</td>
+<td>Correlation coefficient between somatic anxiety and athletic performance</td>
+</tr>
+<tr class="even">
+<td>C6</td>
+<td>Correlation coefficient between self concept and athletic performance</td>
+</tr>
+</tbody>
+</table>
+<p>Next, let’s use <code><a href="../reference/r.vcov.html">r.vcov()</a></code> to compute the z scores and their variance-covariance matrix.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(<span class="st">"metavcov"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">data</span>(Craft2003)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="co">#extract correlation from the dataset (craft)</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>  corflat &lt;-<span class="st"> </span><span class="kw">subset</span>(Craft2003, <span class="dt">select=</span>C1<span class="op">:</span>C6)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="co"># transform correlations to z and compute variance-covariance matrix.</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  computvocv &lt;-<span class="st"> </span><span class="kw">r.vcov</span>(<span class="dt">n =</span> Craft2003<span class="op">$</span>N, <span class="dt">corflat =</span> corflat, <span class="dt">method =</span> <span class="st">"average"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a>  <span class="co"># name transformed z scores as an input</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>  Input &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zr</span>
+<span id="cb4-9"><a href="#cb4-9"></a>  <span class="kw">head</span>(Input)</span>
+<span id="cb4-10"><a href="#cb4-10"></a>  </span>
+<span id="cb4-11"><a href="#cb4-11"></a>  <span class="op">&gt;</span><span class="st">          </span>C1         C2         C3          C4          C5          C6</span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span> <span class="fl">0.2447741</span> <span class="fl">-0.4236489</span> <span class="fl">-0.3540925</span> <span class="fl">-0.17166666</span>  <span class="fl">0.08017133</span>  <span class="fl">0.21317135</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span> <span class="fl">0.4476920</span> <span class="fl">-0.4476920</span> <span class="fl">-0.5229843</span> <span class="fl">-0.08017133</span>  <span class="fl">0.17166666</span> <span class="fl">-0.12058103</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span> <span class="fl">0.3428283</span> <span class="fl">-0.1923372</span> <span class="fl">-0.6776661</span> <span class="fl">-0.14092558</span> <span class="fl">-0.11044692</span>  <span class="fl">0.09024419</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">4</span> <span class="fl">0.2152645</span> <span class="fl">-0.6098195</span> <span class="fl">-0.4611242</span> <span class="fl">-0.41297996</span> <span class="fl">-0.16755048</span>  <span class="fl">0.19337483</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">5</span> <span class="fl">0.5100703</span> <span class="fl">-0.3884231</span> <span class="fl">-0.5493061</span>  <span class="fl">0.10033535</span>  <span class="fl">0.32054541</span> <span class="fl">-0.17166666</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">6</span> <span class="fl">0.8107431</span> <span class="fl">-0.3768859</span> <span class="fl">-0.9076450</span> <span class="fl">-0.15114044</span> <span class="fl">-0.42364893</span>  <span class="fl">0.36544375</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>  <span class="co"># name variance-covariance matrix of trnasformed z scores as covars</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a>  </span>
+<span id="cb4-20"><a href="#cb4-20"></a>  covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zcov</span>
+<span id="cb4-21"><a href="#cb4-21"></a>  <span class="kw">head</span>(covars)</span>
+<span id="cb4-22"><a href="#cb4-22"></a>  </span>
+<span id="cb4-23"><a href="#cb4-23"></a>  <span class="op">&gt;</span><span class="st">            </span>[,<span class="dv">1</span>]         [,<span class="dv">2</span>]        [,<span class="dv">3</span>]         [,<span class="dv">4</span>]         [,<span class="dv">5</span>]</span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">1</span>,] <span class="fl">0.04761905</span> <span class="fl">0.0003351688</span> <span class="fl">0.002138113</span> <span class="fl">-0.010579071</span> <span class="fl">-0.013761771</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">2</span>,] <span class="fl">0.04166667</span> <span class="fl">0.0002979278</span> <span class="fl">0.001900545</span> <span class="fl">-0.009403618</span> <span class="fl">-0.012232685</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">3</span>,] <span class="fl">0.03703704</span> <span class="fl">0.0002681350</span> <span class="fl">0.001710490</span> <span class="fl">-0.008463256</span> <span class="fl">-0.011009417</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">4</span>,] <span class="fl">0.09090909</span> <span class="fl">0.0005745750</span> <span class="fl">0.003665336</span> <span class="fl">-0.018135549</span> <span class="fl">-0.023591607</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">5</span>,] <span class="fl">0.02380952</span> <span class="fl">0.0001787567</span> <span class="fl">0.001140327</span> <span class="fl">-0.005642171</span> <span class="fl">-0.007339611</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">6</span>,] <span class="fl">0.04761905</span> <span class="fl">0.0003351688</span> <span class="fl">0.002138113</span> <span class="fl">-0.010579071</span> <span class="fl">-0.013761771</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="op">&gt;</span><span class="st">               </span>[,<span class="dv">6</span>]       [,<span class="dv">7</span>]        [,<span class="dv">8</span>]       [,<span class="dv">9</span>]       [,<span class="dv">10</span>]        [,<span class="dv">11</span>]</span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">1</span>,] <span class="fl">-0.0011673589</span> <span class="fl">0.04761905</span> <span class="fl">0.003998742</span> <span class="fl">0.02506561</span> <span class="fl">0.002305253</span> <span class="fl">-0.013540829</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">2</span>,] <span class="fl">-0.0010376523</span> <span class="fl">0.04166667</span> <span class="fl">0.003554437</span> <span class="fl">0.02228054</span> <span class="fl">0.002049114</span> <span class="fl">-0.012036292</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">3</span>,] <span class="fl">-0.0009338871</span> <span class="fl">0.03703704</span> <span class="fl">0.003198993</span> <span class="fl">0.02005248</span> <span class="fl">0.001844203</span> <span class="fl">-0.010832663</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">4</span>,] <span class="fl">-0.0020011867</span> <span class="fl">0.09090909</span> <span class="fl">0.006854986</span> <span class="fl">0.04296961</span> <span class="fl">0.003951863</span> <span class="fl">-0.023212849</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">5</span>,] <span class="fl">-0.0006225914</span> <span class="fl">0.02380952</span> <span class="fl">0.002132662</span> <span class="fl">0.01336832</span> <span class="fl">0.001229468</span> <span class="fl">-0.007221775</span></span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">6</span>,] <span class="fl">-0.0011673589</span> <span class="fl">0.04761905</span> <span class="fl">0.003998742</span> <span class="fl">0.02506561</span> <span class="fl">0.002305253</span> <span class="fl">-0.013540829</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="op">&gt;</span><span class="st">           </span>[,<span class="dv">12</span>]       [,<span class="dv">13</span>]      [,<span class="dv">14</span>]        [,<span class="dv">15</span>]      [,<span class="dv">16</span>]       [,<span class="dv">17</span>]</span>
+<span id="cb4-38"><a href="#cb4-38"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">1</span>,] <span class="fl">0.04761905</span> <span class="fl">0.001963746</span> <span class="fl">0.02512404</span> <span class="fl">-0.010480026</span> <span class="fl">0.04761905</span> <span class="fl">0.005879878</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">2</span>,] <span class="fl">0.04166667</span> <span class="fl">0.001745552</span> <span class="fl">0.02233248</span> <span class="fl">-0.009315578</span> <span class="fl">0.04166667</span> <span class="fl">0.005226558</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">3</span>,] <span class="fl">0.03703704</span> <span class="fl">0.001570997</span> <span class="fl">0.02009923</span> <span class="fl">-0.008384021</span> <span class="fl">0.03703704</span> <span class="fl">0.004703902</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">4</span>,] <span class="fl">0.09090909</span> <span class="fl">0.003366422</span> <span class="fl">0.04306978</span> <span class="fl">-0.017965758</span> <span class="fl">0.09090909</span> <span class="fl">0.010079791</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">5</span>,] <span class="fl">0.02380952</span> <span class="fl">0.001047331</span> <span class="fl">0.01339949</span> <span class="fl">-0.005589347</span> <span class="fl">0.02380952</span> <span class="fl">0.003135935</span></span>
+<span id="cb4-43"><a href="#cb4-43"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">6</span>,] <span class="fl">0.04761905</span> <span class="fl">0.001963746</span> <span class="fl">0.02512404</span> <span class="fl">-0.010480026</span> <span class="fl">0.04761905</span> <span class="fl">0.005879878</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="op">&gt;</span><span class="st">              </span>[,<span class="dv">18</span>]      [,<span class="dv">19</span>]        [,<span class="dv">20</span>]      [,<span class="dv">21</span>]</span>
+<span id="cb4-45"><a href="#cb4-45"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">1</span>,] <span class="fl">-0.0017802532</span> <span class="fl">0.04761905</span> <span class="fl">-0.002948570</span> <span class="fl">0.04761905</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">2</span>,] <span class="fl">-0.0015824473</span> <span class="fl">0.04166667</span> <span class="fl">-0.002620951</span> <span class="fl">0.04166667</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">3</span>,] <span class="fl">-0.0014242026</span> <span class="fl">0.03703704</span> <span class="fl">-0.002358856</span> <span class="fl">0.03703704</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">4</span>,] <span class="fl">-0.0030518626</span> <span class="fl">0.09090909</span> <span class="fl">-0.005054692</span> <span class="fl">0.09090909</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">5</span>,] <span class="fl">-0.0009494684</span> <span class="fl">0.02380952</span> <span class="fl">-0.001572571</span> <span class="fl">0.02380952</span></span>
+<span id="cb4-50"><a href="#cb4-50"></a><span class="op">&gt;</span><span class="st"> </span>[<span class="dv">6</span>,] <span class="fl">-0.0017802532</span> <span class="fl">0.04761905</span> <span class="fl">-0.002948570</span> <span class="fl">0.04761905</span></span></code></pre></div>
+<p>Finally, let’s use the package <code>mvmeta</code> to complete this multivariate meta analysis.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">library</span>(mvmeta)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>mvmeta_RE &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">mvmeta</span>(<span class="kw">cbind</span>(C1, C2, C3, C4, C5, C6),</span>
+<span id="cb5-3"><a href="#cb5-3"></a>                            <span class="dt">S =</span> covars, <span class="dt">data =</span> Input, <span class="dt">method =</span> <span class="st">"reml"</span>))</span>
+<span id="cb5-4"><a href="#cb5-4"></a>mvmeta_RE</span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="op">&gt;</span><span class="st"> </span>Call<span class="op">:</span><span class="st">  </span><span class="kw">mvmeta</span>(<span class="dt">formula =</span> <span class="kw">cbind</span>(C1, C2, C3, C4, C5, C6) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">S =</span> covars, </span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="op">&gt;</span><span class="st">     </span><span class="dt">data =</span> Input, <span class="dt">method =</span> <span class="st">"reml"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="op">&gt;</span><span class="st"> </span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="er">&gt;</span><span class="st"> </span>Multivariate random<span class="op">-</span>effects meta<span class="op">-</span>analysis</span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="op">&gt;</span><span class="st"> </span>Dimension<span class="op">:</span><span class="st"> </span><span class="dv">6</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="op">&gt;</span><span class="st"> </span>Estimation method<span class="op">:</span><span class="st"> </span>REML</span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="op">&gt;</span><span class="st"> </span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="er">&gt;</span><span class="st"> </span>Fixed<span class="op">-</span>effects coefficients</span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="op">&gt;</span><span class="st">     </span>Estimate  Std. Error        z  <span class="kw">Pr</span>(<span class="op">&gt;</span><span class="er">|</span>z<span class="op">|</span>)  <span class="dv">95</span><span class="op">%ci.lb  95%</span>ci.ub     </span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="op">&gt;</span><span class="st"> </span>C1    <span class="fl">0.5033</span>      <span class="fl">0.0637</span>   <span class="fl">7.9016</span>    <span class="fl">0.0000</span>    <span class="fl">0.3784</span>    <span class="fl">0.6281</span>  <span class="op">**</span><span class="er">*</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="er">&gt;</span><span class="st"> </span>C2   <span class="fl">-0.2666</span>      <span class="fl">0.0421</span>  <span class="fl">-6.3404</span>    <span class="fl">0.0000</span>   <span class="fl">-0.3491</span>   <span class="fl">-0.1842</span>  <span class="op">**</span><span class="er">*</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="er">&gt;</span><span class="st"> </span>C3   <span class="fl">-0.3516</span>      <span class="fl">0.0810</span>  <span class="fl">-4.3394</span>    <span class="fl">0.0000</span>   <span class="fl">-0.5104</span>   <span class="fl">-0.1928</span>  <span class="op">**</span><span class="er">*</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="er">&gt;</span><span class="st"> </span>C4   <span class="fl">-0.0246</span>      <span class="fl">0.0543</span>  <span class="fl">-0.4538</span>    <span class="fl">0.6499</span>   <span class="fl">-0.1311</span>    <span class="fl">0.0818</span>     </span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="op">&gt;</span><span class="st"> </span>C5   <span class="fl">-0.0004</span>      <span class="fl">0.0516</span>  <span class="fl">-0.0078</span>    <span class="fl">0.9938</span>   <span class="fl">-0.1014</span>    <span class="fl">0.1006</span>     </span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="op">&gt;</span><span class="st"> </span>C6    <span class="fl">0.0328</span>      <span class="fl">0.0661</span>   <span class="fl">0.4961</span>    <span class="fl">0.6198</span>   <span class="fl">-0.0967</span>    <span class="fl">0.1623</span>     </span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="op">&gt;</span><span class="st"> </span><span class="op">---</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="er">&gt;</span><span class="st"> </span>Signif. codes<span class="op">:</span><span class="st">  </span><span class="dv">0</span> <span class="st">'***'</span> <span class="fl">0.001</span> <span class="st">'**'</span> <span class="fl">0.01</span> <span class="st">'*'</span> <span class="fl">0.05</span> <span class="st">'.'</span> <span class="fl">0.1</span> <span class="st">' '</span> <span class="dv">1</span> </span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="op">&gt;</span><span class="st"> </span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="er">&gt;</span><span class="st"> </span>Between<span class="op">-</span>study random<span class="op">-</span><span class="kw">effects</span> (co)variance components</span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="op">&gt;</span><span class="st"> </span>Structure<span class="op">:</span><span class="st"> </span>General positive<span class="op">-</span>definite</span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="op">&gt;</span><span class="st">     </span>Std. Dev     Corr                                    </span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="op">&gt;</span><span class="st"> </span>C1    <span class="fl">0.2116</span>       C1       C2       C3       C4       C5</span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="op">&gt;</span><span class="st"> </span>C2    <span class="fl">0.1075</span>  <span class="fl">-0.3361</span>                                    </span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="op">&gt;</span><span class="st"> </span>C3    <span class="fl">0.2896</span>  <span class="fl">-0.2672</span>  <span class="fl">-0.1089</span>                           </span>
+<span id="cb5-30"><a href="#cb5-30"></a><span class="op">&gt;</span><span class="st"> </span>C4    <span class="fl">0.1741</span>  <span class="fl">-0.3114</span>  <span class="fl">-0.7897</span>   <span class="fl">0.3173</span>                  </span>
+<span id="cb5-31"><a href="#cb5-31"></a><span class="op">&gt;</span><span class="st"> </span>C5    <span class="fl">0.1620</span>  <span class="fl">-0.3772</span>  <span class="fl">-0.7222</span>   <span class="fl">0.4911</span>   <span class="fl">0.9810</span>         </span>
+<span id="cb5-32"><a href="#cb5-32"></a><span class="op">&gt;</span><span class="st"> </span>C6    <span class="fl">0.2266</span>   <span class="fl">0.8901</span>   <span class="fl">0.1085</span>  <span class="fl">-0.4630</span>  <span class="fl">-0.6933</span>  <span class="fl">-0.7562</span></span>
+<span id="cb5-33"><a href="#cb5-33"></a><span class="op">&gt;</span><span class="st"> </span></span>
+<span id="cb5-34"><a href="#cb5-34"></a><span class="er">&gt;</span><span class="st"> </span>Multivariate Cochran Q<span class="op">-</span>test <span class="cf">for</span> heterogeneity<span class="op">:</span></span>
+<span id="cb5-35"><a href="#cb5-35"></a><span class="er">&gt;</span><span class="st"> </span>Q =<span class="st"> </span><span class="fl">349.8594</span> (<span class="dt">df =</span> <span class="dv">102</span>), p<span class="op">-</span>value =<span class="st"> </span><span class="fl">0.0000</span></span>
+<span id="cb5-36"><a href="#cb5-36"></a><span class="op">&gt;</span><span class="st"> </span>I<span class="op">-</span>square statistic =<span class="st"> </span><span class="fl">70.8</span>%</span>
+<span id="cb5-37"><a href="#cb5-37"></a><span class="op">&gt;</span><span class="st"> </span></span>
+<span id="cb5-38"><a href="#cb5-38"></a><span class="er">&gt;</span><span class="st"> </span><span class="dv">18</span> studies, <span class="dv">108</span> observations, <span class="dv">6</span> fixed and <span class="dv">21</span> random<span class="op">-</span>effects parameters</span>
+<span id="cb5-39"><a href="#cb5-39"></a><span class="op">&gt;</span><span class="st">   </span>logLik       AIC       BIC  </span>
+<span id="cb5-40"><a href="#cb5-40"></a><span class="op">&gt;</span><span class="st">   </span><span class="fl">0.2746</span>   <span class="fl">53.4508</span>  <span class="fl">124.3251</span></span></code></pre></div>
+<p>You could use the following code for meta-regression, but there is no significant difference in gender.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.ag-myresearch.com/package-mvmeta">mvmeta</a></span><span class="op">)</span>
+<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">Input</span>, p_male<span class="op">=</span><span class="va">Craft2003</span><span class="op">$</span><span class="va">gender</span><span class="op">)</span>
+<span class="va">metarg_RE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/mvmeta/man/mvmeta.html">mvmeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">C1</span>, <span class="va">C2</span>, <span class="va">C3</span>, <span class="va">C4</span>, <span class="va">C5</span>, <span class="va">C6</span><span class="op">)</span> <span class="op">~</span> <span class="va">p_male</span>,
+                            S <span class="op">=</span> <span class="va">covars</span>, data <span class="op">=</span> <span class="va">data</span>, method <span class="op">=</span> <span class="st">"reml"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">metarg_RE</span></code></pre></div>
 </div>
 <div id="correlation" class="section level2">
 <h2 class="hasAnchor">
@@ -221,6 +326,9 @@ font-size: 16px;
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references">
+<div id="ref-craft2003relationship">
+<p>Craft, Lynette L, T Michelle Magyar, Betsy J Becker, and Deborah L Feltz. 2003. “The Relationship Between the Competitive State Anxiety Inventory-2 and Sport Performance: A Meta-Analysis.” <em>Journal of Sport and Exercise Psychology</em> 25 (1): 44–65.</p>
+</div>
 <div id="ref-MetaAnalysis">
 <p>Dewey, Michael. 2021. <em>CRAN Task View: Meta-Analysis</em>. manual. <a href="https://cran.r-project.org/web/views/MetaAnalysis.html">https://cran.r-project.org/web/views/MetaAnalysis.html</a>.</p>
 </div>

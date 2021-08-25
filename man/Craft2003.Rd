@@ -10,9 +10,9 @@ Feltz (2003).}
 
 \tabular{ll}{
 ID \tab ID for each study included\cr
-N \tab sample size from each study included\cr
-gender \tab gender\cr
-p_male \tab percentage of male \cr
+N \tab Sample size from each study included\cr
+gender \tab Gender\cr
+p_male \tab Percentage of male \cr
 C1 \tab Correlation coefficient between cognitive anxiety and somatic anxiety \cr
 C2 \tab Correlation coefficient between cognitive anxiety and self concept \cr
 C3 \tab Correlation coefficient between cognitive anxiety and athletic performance \cr
@@ -26,7 +26,7 @@ C6 \tab Correlation coefficient between self concept and athletic performance \c
 \source{
 Ahn, S., Lu, M., Lefevor, G.T., Fedewa, A. & Celimli, S. (2016). Application of meta-analysis in sport and exercise science. In N. Ntoumanis, & N. Myers (Eds.), \emph{An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists} (pp.233-253). Hoboken, NJ: John Wiley and Sons, Ltd.
 
-Craft, L. L., Magyar, T. M., Becker, B. J., & Feltz, D. L. (2003). The relationship between the competitive state anxiety inventory-2 and sport performance: a meta-analysis. \emph{Journal of Sport and Exercise Psychology, 25}(1), 44-65. 
+Craft, L. L., Magyar, T. M., Becker, B. J., & Feltz, D. L. (2003). The relationship between the competitive state anxiety inventory-2 and sport performance: a meta-analysis. \emph{Journal of Sport and Exercise Psychology, 25}(1), 44-65.
 }
 
 
