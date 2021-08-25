@@ -6,19 +6,21 @@ vers <- paste("R package version", meta$Version)
 
 citEntry(entry="Manual",
          title = titl,
-         author = personList(person(family="Lu", given="M.")),
+         author = personList(person(family="Lu", given="Min")),
 	 publisher = "manual",
          year         = year,
          note         = vers,
          url          = "https://cran.r-project.org/package=metavcov",
+         doi          = "https://doi.org/10.5281/zenodo.5240826",
          pdf          = "https://cran.r-project.org/web/packages/metavcov/metavcov.pdf",
          textVersion =
          paste("Lu M. (",year ,"). ",
                titl, ", ", vers, ".", sep=""))
 
-citEntry(entry="inbook",
+citEntry(entry="incollection",
          title  = "Application of Meta-Analysis in Sport and Exercise Science",
-         author =  "Ahn, S and Lu, M and Lefevor, GT and Fedewa, AL and Celimli, S",
+         chapter = 11,
+         author =  "Soyeon Ahn and Min Lu and G Tyler Lefevor and Alicia L. Fedewa and Seniz Celimli",
 	 booktitle     = "An introduction to intermediate and advanced statistical analyses for sport and exercise scientists",
 	 editor      = "Nikos Ntoumanis and Nicholas D. Myers",
          year         = "2015",
@@ -27,5 +29,7 @@ citEntry(entry="inbook",
          url          = "https://bcs.wiley.com/he-bcs/Books?action=index&bcsId=9985&itemId=1118962052",
 
          textVersion =
-         paste("Ahn S., Lu M., Lefevor G. T., Fedewa A.L., and Celimli S. (2015). Application of Meta-Analysis inSport and Exercise Science. In Ntoumanis N. and Myers N.D. (Eds.), An introduction to intermediateand advanced statistical analyses for sport and exercise scientists (pp. 233-253). John Wiley & Sons.",
+         paste("Ahn S., Lu M., Lefevor G. T., Fedewa A.L., and Celimli S. (2015). Application of Meta-Analysis in
+Sport and Exercise Science. In Ntoumanis N. and Myers N.D. (Eds.), An introduction to intermediate
+and advanced statistical analyses for sport and exercise scientists (pp. 233-253). John Wiley & Sons.",
                sep=""))

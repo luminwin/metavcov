@@ -11,3 +11,4 @@
 
 Compute variance-covariance matrix for multivariate meta-analysis. Effect sizes include correlation (r), mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD).
 
+<a href="https://luminwin.github.io/metavcov/articles/intro.html"><img src="logo.svg" align="right"  height="80" />
