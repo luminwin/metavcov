@@ -1,5 +1,5 @@
 
-#  metavcov <a href="https://cran.r-project.org/package=metavcov">
+#  metavcov <a href="https://luminwin.github.io/metavcov/articles/intro.html"><img src="logo.svg" align="right"  height="100" />
 
 
 <!-- badges: start -->
@@ -14,5 +14,3 @@ Compute variance-covariance matrix for multivariate meta-analysis. Effect sizes 
 2017-03-29: release version 1.1
 
 2021-08-21: release version 2.1
-
-<a href="https://luminwin.github.io/metavcov/articles/intro.html"><img src="logo.svg" align="right"  height="80" />
