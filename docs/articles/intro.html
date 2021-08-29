@@ -101,7 +101,7 @@
       <h1 data-toc-skip>An Introduction to metavcov</h1>
                         <h4 class="author"><a href="https://luminwin.github.io/Lu/articles/cv.html">Min Lu</a></h4>
             
-            <h4 class="date">2021-08-25</h4>
+            <h4 class="date">2021-08-28</h4>
       
       
       <div class="hidden name"><code>intro.Rmd</code></div>
@@ -318,23 +318,143 @@ font-size: 16px;
                             S <span class="op">=</span> <span class="va">covars</span>, data <span class="op">=</span> <span class="va">data</span>, method <span class="op">=</span> <span class="st">"reml"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">metarg_RE</span></code></pre></div>
 </div>
-<div id="correlation" class="section level2">
+<div id="model-specification" class="section level2">
 <h2 class="hasAnchor">
-<a href="#correlation" class="anchor"></a>Correlation</h2>
+<a href="#model-specification" class="anchor"></a>Model specification</h2>
+<p>In general, a multivariate meta-analysis specifies the model at within-study and between-study levels <span class="citation">Wei and Higgins (2013)</span>. For the within-study level, let <span class="math inline">\(\hat{\boldsymbol\theta}_i\)</span> denote a vector of <span class="math inline">\(p\)</span> observed effect size in the <span class="math inline">\(i\)</span>th study, which is assumed from a multivariate normal distribution:</p>
+<p><span class="math display">\[{{\hat{\boldsymbol\theta}}_{i}}\sim\text{MVN(}{{\boldsymbol\theta}_{i}},{{\boldsymbol\Sigma}_{i}})\text{ with } {{\boldsymbol\Sigma}_{i}}=\left[ \begin{matrix}
+    s_{i1}^{2} &amp; {{\rho }_{w12}}{{s}_{i1}}{{s}_{i2}} &amp; \cdots  &amp; {{\rho }_{w1p}}{{s}_{i1}}{{s}_{ip}}  \\
+    {{\rho }_{w21}}{{s}_{i1}}{{s}_{i2}} &amp; s_{i2}^{2} &amp; \cdots  &amp; {{\rho }_{w2p}}{{s}_{i2}}{{s}_{ip}}  \\
+    \vdots  &amp; \vdots  &amp; \ddots  &amp; \vdots   \\
+    {{\rho }_{wp1}}{{s}_{i1}}{{s}_{ip}} &amp; {{\rho }_{wp2}}{{s}_{i2}}{{s}_{ip}} &amp; \cdots  &amp; s_{ip}^{2}  \\
+\end{matrix} \right],
+ \]</span> where <span class="math inline">\({\boldsymbol\theta}_{i}\)</span> is the vector of underlying true effect sizes for study <span class="math inline">\(i\)</span> and <span class="math inline">\({{\boldsymbol\Sigma}_{i}}\)</span> is the within-study variance-covariance matrix, which is composed of the sampling variance of each effect size on the diagonal, denoted by <span class="math inline">\(s_{ij}^{2}\)</span> <span class="math inline">\((j=1,\dots,p)\)</span> for the <span class="math inline">\(j\)</span>th effect size, and the within-study covariance of each pair of effect sizes on the off-diagonal that reflects within-study correlation, denoted by <span class="math inline">\({{\rho }_{wjk}}\)</span> for the <span class="math inline">\(j\)</span>th and <span class="math inline">\(k\)</span>th effect sizes. Here, index <span class="math inline">\(i\)</span> is omitted for <span class="math inline">\({{\rho }_{w..}}\)</span> for the reason of simplicity. The assumption for <span class="math inline">\({\boldsymbol\theta}_{i}\)</span> is a multivariate normal distribution that centers around the true average effect sizes, <span class="math inline">\(\boldsymbol\theta=(\theta_1,\theta_2,\dots,\theta_p)^T\)</span>, across studies:</p>
+<p><span class="math display">\[{{\boldsymbol\theta}_{i}}\sim\text{MVN(}\boldsymbol\theta,\boldsymbol\Omega) \text{ with } \boldsymbol\Omega=\left[ \begin{matrix}
+    \tau _{1}^{2} &amp; {{\rho }_{b12}}{{\tau }_{1}}{{\tau }_{2}} &amp; \cdots  &amp; {{\rho }_{b1p}}{{\tau }_{1}}{{\tau }_{p}}  \\
+    {{\rho }_{b21}}{{\tau }_{1}}{{\tau }_{2}} &amp; \tau _{2}^{2} &amp; \cdots  &amp; {{\rho }_{b2p}}{{\tau }_{2}}{{\tau }_{p}}  \\
+    \vdots  &amp; \vdots  &amp; \ddots  &amp; \vdots   \\
+    {{\rho }_{bp1}}{{\tau }_{1}}{{\tau }_{p}} &amp; {{\rho }_{bp2}}{{\tau }_{2}}{{\tau }_{p}} &amp; \cdots  &amp; \tau _{p}^{2}  \\
+\end{matrix} \right],
+\]</span> where <span class="math inline">\(\boldsymbol\Omega\)</span> is the between-study variance-covariance matrix, which is composed of the between-study variance for each true effect size on the diagonal and between-study covariance for each pair of effect sizes on the off-diagonal that reflects between-study correlations <span class="math inline">\({\rho }_{b..}\)</span>. This model can be also writen as <span class="math inline">\({{\hat{\boldsymbol\theta}}_{i}}\sim\text{MVN(}{{\boldsymbol\theta}},{{\boldsymbol\Sigma}_{i}}+\boldsymbol\Omega)\)</span>. In the following sections, the notation <span class="math inline">\(\theta\)</span> is replaced according to different types of effect sizes, such as <span class="math inline">\(r\)</span> for correlation and <span class="math inline">\(\delta\)</span> for standardized mean difference.</p>
+</div>
+<div id="correlation-coefficients" class="section level2">
+<h2 class="hasAnchor">
+<a href="#correlation-coefficients" class="anchor"></a>Correlation coefficients</h2>
+<p>Let <span class="math inline">\(r_{ist}\)</span> denote the correlation coefficient that describes the relationship between variables <span class="math inline">\(s\)</span> and <span class="math inline">\(t\)</span>. Following the notation by <span class="citation">Ahn et al. (2015)</span> and <span class="citation">Olkin (1976)</span>, we have</p>
+<p><span class="math display">\[\text{var}({{r}_{ist}})={{(1-\rho _{ist}^{2})}^{2}}/{{n}_{i}}\]</span></p>
+<p>for the variance of <span class="math inline">\(r_{ist}\)</span> and the covariance between <span class="math inline">\(r_{ist}\)</span> and <span class="math inline">\({r}_{iuv}\)</span> is <span class="math display">\[\begin{align*}
+    \text{cov}({{r}_{ist}},{{r}_{iuv}})=&amp;[.5{{\rho }_{ist}}{{\rho }_{iuv}}({{\rho }^{2}}_{isu}+{{\rho }^{2}}_{isv}+{{\rho }^{2}}_{itu}+{{\rho }^{2}}_{itv})+{{\rho }_{isu}}{{\rho }_{itv}}+{{\rho }_{isv}}{{\rho }_{itu}} \\ 
+    &amp; -({{\rho }_{ist}}{{\rho }_{isu}}{{\rho }_{isv}}+{{\rho }_{its}}{{\rho }_{itu}}{{\rho }_{itv}}+{{\rho }_{ius}}{{\rho }_{iut}}{{\rho }_{iuv}}+{{\rho }_{ivs}}{{\rho }_{ivt}}{{\rho }_{ivu}})]/{{n}_{i}}
+\end{align*}\]</span></p>
+<p>When the transformed Fisher’s <span class="math inline">\(z\)</span>s are used, their variances and covariances are computed by</p>
+<p><span class="math display">\[\text{var}({{z}_{ist}})=1/({{n}_{i}}-3)\]</span></p>
+<p><span class="math display">\[\text{cov}({{z}_{ist}},{{z}_{iuv}})={{\sigma }_{ist,uv}}/\left[ (1-\rho _{ist}^{2})(1-\rho _{iuv}^{2}) \right]\]</span></p>
+<p>Use the example of <span class="citation">Cooper, Hedges, and Valentine (2019)</span> on page 388 as an illustration:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="op">&gt;</span><span class="st"> </span>r &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.074</span>, <span class="fl">-0.127</span>, <span class="fl">0.324</span>, <span class="fl">0.523</span>, <span class="fl">-0.416</span>, <span class="fl">-0.414</span>), <span class="dv">1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="op">&gt;</span><span class="st"> </span>n &lt;-<span class="st"> </span><span class="dv">142</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="op">&gt;</span><span class="st"> </span>computvcov &lt;-<span class="st"> </span><span class="kw">r.vcov</span>(<span class="dt">n =</span> n, <span class="dt">corflat =</span> r, <span class="dt">method =</span> <span class="st">"average"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">round</span>(computvcov<span class="op">$</span>list.rcov[[<span class="dv">1</span>]], <span class="dv">4</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>        [,<span class="dv">1</span>]    [,<span class="dv">2</span>]    [,<span class="dv">3</span>]    [,<span class="dv">4</span>]    [,<span class="dv">5</span>]    [,<span class="dv">6</span>]</span>
+<span id="cb7-6"><a href="#cb7-6"></a>[<span class="dv">1</span>,]  <span class="fl">0.0070</span>  <span class="fl">0.0036</span> <span class="fl">-0.0025</span> <span class="fl">-0.0005</span>  <span class="fl">0.0018</span>  <span class="fl">0.0009</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>[<span class="dv">2</span>,]  <span class="fl">0.0036</span>  <span class="fl">0.0068</span> <span class="fl">-0.0025</span> <span class="fl">-0.0002</span>  <span class="fl">0.0008</span>  <span class="fl">0.0017</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>[<span class="dv">3</span>,] <span class="fl">-0.0025</span> <span class="fl">-0.0025</span>  <span class="fl">0.0056</span>  <span class="fl">0.0001</span>  <span class="fl">0.0000</span> <span class="fl">-0.0003</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>[<span class="dv">4</span>,] <span class="fl">-0.0005</span> <span class="fl">-0.0002</span>  <span class="fl">0.0001</span>  <span class="fl">0.0037</span> <span class="fl">-0.0013</span> <span class="fl">-0.0013</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>[<span class="dv">5</span>,]  <span class="fl">0.0018</span>  <span class="fl">0.0008</span>  <span class="fl">0.0000</span> <span class="fl">-0.0013</span>  <span class="fl">0.0048</span>  <span class="fl">0.0022</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>[<span class="dv">6</span>,]  <span class="fl">0.0009</span>  <span class="fl">0.0017</span> <span class="fl">-0.0003</span> <span class="fl">-0.0013</span>  <span class="fl">0.0022</span>  <span class="fl">0.0048</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">round</span>(computvcov<span class="op">$</span>list.zcov[[<span class="dv">1</span>]], <span class="dv">4</span>)</span>
+<span id="cb7-13"><a href="#cb7-13"></a>        [,<span class="dv">1</span>]    [,<span class="dv">2</span>]    [,<span class="dv">3</span>]    [,<span class="dv">4</span>]    [,<span class="dv">5</span>]    [,<span class="dv">6</span>]</span>
+<span id="cb7-14"><a href="#cb7-14"></a>[<span class="dv">1</span>,]  <span class="fl">0.0072</span>  <span class="fl">0.0041</span> <span class="fl">-0.0030</span> <span class="fl">-0.0007</span>  <span class="fl">0.0023</span>  <span class="fl">0.0012</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>[<span class="dv">2</span>,]  <span class="fl">0.0041</span>  <span class="fl">0.0072</span> <span class="fl">-0.0030</span> <span class="fl">-0.0003</span>  <span class="fl">0.0011</span>  <span class="fl">0.0022</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a>[<span class="dv">3</span>,] <span class="fl">-0.0030</span> <span class="fl">-0.0030</span>  <span class="fl">0.0072</span>  <span class="fl">0.0001</span>  <span class="fl">0.0000</span> <span class="fl">-0.0004</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>[<span class="dv">4</span>,] <span class="fl">-0.0007</span> <span class="fl">-0.0003</span>  <span class="fl">0.0001</span>  <span class="fl">0.0072</span> <span class="fl">-0.0023</span> <span class="fl">-0.0023</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a>[<span class="dv">5</span>,]  <span class="fl">0.0023</span>  <span class="fl">0.0011</span>  <span class="fl">0.0000</span> <span class="fl">-0.0023</span>  <span class="fl">0.0072</span>  <span class="fl">0.0036</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>[<span class="dv">6</span>,]  <span class="fl">0.0012</span>  <span class="fl">0.0022</span> <span class="fl">-0.0004</span> <span class="fl">-0.0023</span>  <span class="fl">0.0036</span>  <span class="fl">0.0072</span></span></code></pre></div>
+<p>The <span class="math inline">\(z\)</span> transformed correlation coefficients are saved in the output vector <code>zr</code>. Note that for <span class="math inline">\(m\)</span> outcomes, there are <span class="math inline">\(p=m\times (m-1)/2\)</span> correlation coefficients. Since the <span class="math inline">\(p\)</span> by <span class="math inline">\(p\)</span> matrix is symmetric, there are <span class="math inline">\(p+(p-1)+(p-2)\dots +1=p(p+1)/2\)</span> unique elements. It is more convenient to store these unique elements in a vector, so that if we have <span class="math inline">\(N\)</span> studies, we could have a <span class="math inline">\(N\)</span> by <span class="math inline">\(p(p+1)/2\)</span> matrix that saves all the variances and covariances, which is named <code>zcov</code> as an output value and can be used for package <code>mvmeta</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">data</span>(Craft2003)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="op">&gt;</span><span class="st"> </span>corflat &lt;-<span class="st"> </span><span class="kw">subset</span>(Craft2003, <span class="dt">select=</span>C1<span class="op">:</span>C6)</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="op">&gt;</span><span class="st"> </span>computvocv &lt;-<span class="st"> </span><span class="kw">r.vcov</span>(<span class="dt">n =</span> Craft2003<span class="op">$</span>N, <span class="dt">corflat =</span> corflat, <span class="dt">method =</span> <span class="st">"average"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="op">&gt;</span><span class="st"> </span>input &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zr</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="op">&gt;</span><span class="st"> </span>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zcov</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="op">&gt;</span><span class="st"> </span>covars[<span class="dv">1</span>,]</span>
+<span id="cb8-8"><a href="#cb8-8"></a>[<span class="dv">1</span>]  <span class="fl">0.0476190476</span>  <span class="fl">0.0003351688</span>  <span class="fl">0.0021381126</span> <span class="fl">-0.0105790705</span> <span class="fl">-0.0137617708</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>[<span class="dv">6</span>] <span class="fl">-0.0011673589</span>  <span class="fl">0.0476190476</span>  <span class="fl">0.0039987417</span>  <span class="fl">0.0250656051</span>  <span class="fl">0.0023052534</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>[<span class="dv">11</span>] <span class="fl">-0.0135408286</span>  <span class="fl">0.0476190476</span>  <span class="fl">0.0019637462</span>  <span class="fl">0.0251240397</span> <span class="fl">-0.0104800258</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>[<span class="dv">16</span>]  <span class="fl">0.0476190476</span>  <span class="fl">0.0058798781</span> <span class="fl">-0.0017802532</span>  <span class="fl">0.0476190476</span> <span class="fl">-0.0029485703</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>[<span class="dv">21</span>]  <span class="fl">0.0476190476</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">library</span>(mvmeta)</span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="op">&gt;</span><span class="st"> </span>mvmeta_RE &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">mvmeta</span>(<span class="kw">cbind</span>(C1, C2, C3, C4, C5, C6),</span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="op">+</span><span class="st"> </span><span class="dt">S =</span> covars, <span class="dt">data =</span> input, <span class="dt">method =</span> <span class="st">"reml"</span>))</span></code></pre></div>
+</div>
+<div id="standardized-mean-difference-smd" class="section level2">
+<h2 class="hasAnchor">
+<a href="#standardized-mean-difference-smd" class="anchor"></a>Standardized mean difference (SMD)</h2>
+<p>For the treatment group, let <span class="math inline">\(n_{jt}\)</span>, <span class="math inline">\(n_{kt}\)</span> and <span class="math inline">\(n_{jkt}\)</span> denote the numbers of participants who report outcome <span class="math inline">\(j\)</span>, outcome <span class="math inline">\(k\)</span> and both outcome <span class="math inline">\(j\)</span> and outcome <span class="math inline">\(k\)</span>. Similarly, denote <span class="math inline">\(n_{jc}\)</span>, <span class="math inline">\(n_{kc}\)</span> and <span class="math inline">\(n_{jkc}\)</span> for the control group. This notation is used for all the effect sizes for treatment comparison, including standardized mean difference, standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD). <span class="citation">Wei and Higgins (2013)</span> derived the covariance between two effect sizes in terms of Hedges’ g, denoted by <span class="math inline">\(\delta_{j}\)</span> and <span class="math inline">\(\delta_{k}\)</span>, as follows</p>
+<p><span class="math display">\[\begin{align*}
+    \text{cov}({\delta_{j}},{\delta_{k}})&amp;=
+    \rho\Big(\frac{n_{jkc}}{n_{jc}n_{kc}}+\frac{ n_{jkt}}{n_{jt}n_{kt}}\Big)+
+    \frac{k_{jk}}{k_jk_k}
+    \rho^2
+    \delta _{j}
+    \delta _{k}J(v_j)J(v_k)\sqrt{\Big(\frac{v_j}{v_j-2}-\frac{1}{{J(v_j)}^2}\Big)\Big(\frac{v_k}{v_k-2}-\frac{1}{{J(v_k)}^2}\Big)},\\
+    \text{ where }k_k&amp;=\frac{2n_{kt}+2n_{kc}-4}{(n_{kc}+n_{kt}-2)^2},\\
+    k_j&amp;=\frac{2n_{jt}+2n_{jc}-4}{(n_{jc}+n_{jt}-2)^2},\\
+    k_{jk}&amp;=\frac{2}{(n_{jc}+n_{jt}-2)(n_{kc}+n_{kt}-2)}\Big(\frac{n_{jt}n_{kt}}{n_{jt}+n_{kt}-1}+\frac{n_{jc}n_{kc}}{n_{jc}+n_{kc}-1}-2\Big),\\
+\end{align*}\]</span></p>
+<p>and <span class="math inline">\({\delta}_{j}\)</span> and <span class="math inline">\({\delta}_{k}\)</span> are the observed SMD for outcome <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>. As a comparison, we also provide the formula in <span class="citation">Olkin and Gleser (2009)</span> for SMD as cohan’s <span class="math inline">\(d\)</span>, which is defined as</p>
+<p><span class="math display">\[\text{cov}^{d}({\delta_{j}},{\delta_{k}})=\frac{(n_{{t}}+n_{{c}}){{\rho }_{jk}}}{n_{{t}}n_{{c}}}+\frac{\delta _{j}^{{}}\delta _{k}^{{}}\rho _{jk}^{2}}{2(n_{{t}}+n_{{c}})},\]</span></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">library</span>(metavcov)</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">data</span>(Geeganage2010)</span>
+<span id="cb9-3"><a href="#cb9-3"></a>r12 &lt;-<span class="st"> </span><span class="fl">0.71</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>r.Gee &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(Geeganage2010), <span class="cf">function</span>(i){<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, r12, r12, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)})</span>
+<span id="cb9-5"><a href="#cb9-5"></a>computvocv &lt;-<span class="st"> </span><span class="kw">smd.vcov</span>(<span class="dt">nt =</span> <span class="kw">subset</span>(Geeganage2010, <span class="dt">select =</span> <span class="kw">c</span>(nt_SBP, nt_DBP)),</span>
+<span id="cb9-6"><a href="#cb9-6"></a>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>smd.cov</span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="kw">head</span>(covars)</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a>           [,<span class="dv">1</span>]       [,<span class="dv">2</span>]       [,<span class="dv">3</span>]</span>
+<span id="cb9-10"><a href="#cb9-10"></a>[<span class="dv">1</span>,] <span class="fl">0.15560955</span> <span class="fl">0.11051462</span> <span class="fl">0.15591453</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>[<span class="dv">2</span>,] <span class="fl">0.18256182</span> <span class="fl">0.12959901</span> <span class="fl">0.18254277</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a>[<span class="dv">3</span>,] <span class="fl">0.03190808</span> <span class="fl">0.02264927</span> <span class="fl">0.03198210</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>[<span class="dv">4</span>,] <span class="fl">0.03115906</span> <span class="fl">0.02212545</span> <span class="fl">0.03119080</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a>[<span class="dv">5</span>,] <span class="fl">0.01965510</span> <span class="fl">0.01395547</span> <span class="fl">0.01967717</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a>[<span class="dv">6</span>,] <span class="fl">0.26813782</span> <span class="fl">0.18910349</span> <span class="fl">0.26680797</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a></span>
+<span id="cb9-17"><a href="#cb9-17"></a>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>smd.cov.d</span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="kw">head</span>(covars)</span>
+<span id="cb9-19"><a href="#cb9-19"></a></span>
+<span id="cb9-20"><a href="#cb9-20"></a>           [,<span class="dv">1</span>]       [,<span class="dv">2</span>]       [,<span class="dv">3</span>]</span>
+<span id="cb9-21"><a href="#cb9-21"></a>[<span class="dv">1</span>,] <span class="fl">0.15565024</span> <span class="fl">0.11056752</span> <span class="fl">0.15618509</span></span>
+<span id="cb9-22"><a href="#cb9-22"></a>[<span class="dv">2</span>,] <span class="fl">0.18257730</span> <span class="fl">0.12959610</span> <span class="fl">0.18254492</span></span>
+<span id="cb9-23"><a href="#cb9-23"></a>[<span class="dv">3</span>,] <span class="fl">0.03200824</span> <span class="fl">0.02271517</span> <span class="fl">0.03215273</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a>[<span class="dv">4</span>,] <span class="fl">0.03117474</span> <span class="fl">0.02213897</span> <span class="fl">0.03123674</span></span>
+<span id="cb9-25"><a href="#cb9-25"></a>[<span class="dv">5</span>,] <span class="fl">0.01965512</span> <span class="fl">0.01395583</span> <span class="fl">0.01969852</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a>[<span class="dv">6</span>,] <span class="fl">0.26896403</span> <span class="fl">0.18897441</span> <span class="fl">0.26688733</span></span></code></pre></div>
 <br><br><p class="comment">
 <strong> Cite this website as </strong> <br> M. Lu. 2021. “metavcov vignette.” <a href="https://luminwin.github.io/metavcov/articles/intro.html" class="uri">https://luminwin.github.io/metavcov/articles/intro.html</a>.
 </p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="op">@</span>misc{LumetavcovV,</span>
-<span id="cb7-2"><a href="#cb7-2"></a>    author =<span class="st"> "Min Lu"</span>,</span>
-<span id="cb7-3"><a href="#cb7-3"></a>    title =<span class="st"> </span>{{metavcov} vignette},</span>
-<span id="cb7-4"><a href="#cb7-4"></a>    year =<span class="st"> </span>{<span class="dv">2021</span>},</span>
-<span id="cb7-5"><a href="#cb7-5"></a>    url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>luminwin.github.io<span class="op">/</span>metavcov<span class="op">/</span>articles<span class="op">/</span>intro.html}</span>
-<span id="cb7-6"><a href="#cb7-6"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="op">@</span>misc{LumetavcovV,</span>
+<span id="cb10-2"><a href="#cb10-2"></a>    author =<span class="st"> "Min Lu"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    title =<span class="st"> </span>{{metavcov} vignette},</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    year =<span class="st"> </span>{<span class="dv">2021</span>},</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>luminwin.github.io<span class="op">/</span>metavcov<span class="op">/</span>articles<span class="op">/</span>intro.html}</span>
+<span id="cb10-6"><a href="#cb10-6"></a>}</span></code></pre></div>
+</div>
+<div id="more-effect-sizes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#more-effect-sizes" class="anchor"></a>More effect sizes</h2>
+<p><a href="TableWei.pdf">See Table 1 in Wei and Higgins (2013) for more formulas</a></p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references">
+<div id="ref-Ahn2015">
+<p>Ahn, Soyeon, Min Lu, G Tyler Lefevor, Alicia L. Fedewa, and Seniz Celimli. 2015. “Application of Meta-Analysis in Sport and Exercise Science.” In <em>An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists</em>, edited by Nikos Ntoumanis and Nicholas D. Myers, 233–53. John Wiley &amp; Sons.</p>
+</div>
+<div id="ref-cooper2019handbook">
+<p>Cooper, Harris, Larry V Hedges, and Jeffrey C Valentine. 2019. <em>The Handbook of Research Synthesis and Meta-Analysis</em>. Russell Sage Foundation.</p>
+</div>
 <div id="ref-craft2003relationship">
 <p>Craft, Lynette L, T Michelle Magyar, Betsy J Becker, and Deborah L Feltz. 2003. “The Relationship Between the Competitive State Anxiety Inventory-2 and Sport Performance: A Meta-Analysis.” <em>Journal of Sport and Exercise Psychology</em> 25 (1): 44–65.</p>
 </div>
@@ -342,10 +462,19 @@ font-size: 16px;
 <p>Dewey, Michael. 2021. <em>CRAN Task View: Meta-Analysis</em>. manual. <a href="https://cran.r-project.org/web/views/MetaAnalysis.html">https://cran.r-project.org/web/views/MetaAnalysis.html</a>.</p>
 </div>
 <div id="ref-metavcovR">
-<p>Lu, Min. 2021. <em>Variance-Covariance Matrix for Multivariate Meta-Analysis with R Package metavcov</em>. manual. <a href="https://doi.org/https://doi.org/10.5281/zenodo.5240826">https://doi.org/https://doi.org/10.5281/zenodo.5240826</a>.</p>
+<p>Lu, Min. 2021. <em>Variance-Covariance Matrix for Multivariate Meta-Analysis with R Package metavcov</em>. manual. <a href="https://doi.org/10.5281/zenodo.5240826">https://doi.org/10.5281/zenodo.5240826</a>.</p>
+</div>
+<div id="ref-olkin2009stochastically">
+<p>Olkin, I, and L Gleser. 2009. “Stochastically Dependent Effect Sizes.” <em>The Handbook of Research Synthesis and Meta-Analysis</em>, 357–76.</p>
+</div>
+<div id="ref-olkin1976asymptotic">
+<p>Olkin, Ingram. 1976. “Asymptotic Distribution of Functions of a Correlation Matrix.” In <em>Essays in Provability and Statistics: A Volume in Honor of Professor Junjiro Ogawa</em>, 235–51. Shinko Tsusho.</p>
 </div>
 <div id="ref-Rbase">
 <p>R Core Team. 2020. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.</p>
+</div>
+<div id="ref-wei2013">
+<p>Wei, Yinghui, and Julian PT Higgins. 2013. “Estimating Within-Study Covariances in Multivariate Meta-Analysis with Multiple Outcomes.” <em>Statistics in Medicine</em> 32 (7): 1191–1205.</p>
 </div>
 </div>
 </div>
