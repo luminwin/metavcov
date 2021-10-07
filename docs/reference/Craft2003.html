@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>18 studies of correlation coefficients reported by Craft et al. (2003) — Craft2003 • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Correlation Coefficients Data from the Craft et al. Meta-Analysis — Craft2003 • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="18 studies of correlation coefficients reported by Craft et al. (2003) — Craft2003" />
+<meta property="og:title" content="Correlation Coefficients Data from the Craft et al. Meta-Analysis — Craft2003" />
 <meta property="og:description" content="This dataset includes 18 studies of correlation coefficients reported by Craft, Magyar, Becker, and
 Feltz (2003)." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
@@ -90,7 +90,7 @@ Feltz (2003)." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -101,6 +101,7 @@ Feltz (2003)." />
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -111,10 +112,19 @@ Feltz (2003)." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -147,7 +157,7 @@ Feltz (2003)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>18 studies of correlation coefficients reported by Craft et al. (2003)</h1>
+    <h1>Correlation Coefficients Data from the Craft et al. Meta-Analysis</h1>
     
     <div class="hidden name"><code>Craft2003.Rd</code></div>
     </div>
@@ -162,7 +172,7 @@ Feltz (2003).</p>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The main purpose of Craft and colleagues (2003) meta-analysis was to examine the interrelationships between athletic performance and three subscales, cognitive anxiety, somatic anxiety, and self-concept, of the Competitive State Anxiety Inventory (CSAI 2; CITATION). In this meta-analysis, the correlation coefficient was the primary effect size measure. For the purpose of demonstration, I use a subset of the data, i.e., six correlation coefficients among cognitive anxiety, somatic anxiety, self-concept, and sport performance in athletes.</p>
+    <p>The primary purpose of Craft and colleagues' meta-analysis was to examine the interrelationships between athletic performance and three subscales, cognitive anxiety, somatic anxiety, and self-concept, of the Competitive State Anxiety Inventory (CSAI 2; CITATION). In this meta-analysis, the correlation coefficient was the primary effect size measure. For the purpose of demonstration, I use a subset of the data, i.e., six correlation coefficients among cognitive anxiety, somatic anxiety, self-concept, and sport performance in athletes.</p>
 <table class='table'>
 <tr><td>ID</td><td>ID for each study included</td></tr>
 <tr><td>N</td><td>Sample size from each study included</td></tr>
@@ -178,12 +188,11 @@ Feltz (2003).</p>
 
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>Ahn, S., Lu, M., Lefevor, G.T., Fedewa, A. &amp; Celimli, S. (2016). Application of meta-analysis in sport and exercise science. In N. Ntoumanis, &amp; N. Myers (Eds.), <em>An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists</em> (pp.233-253). Hoboken, NJ: John Wiley and Sons, Ltd.</p>
-<p>Craft, L. L., Magyar, T. M., Becker, B. J., &amp; Feltz, D. L. (2003). The relationship between the competitive state anxiety inventory-2 and sport performance: a meta-analysis. <em>Journal of Sport and Exercise Psychology, 25</em>(1), 44-65.</p>
+    <p>Craft, L. L., Magyar, T. M., Becker, B. J., &amp; Feltz, D. L. (2003). The relationship between the competitive state anxiety inventory-2 and sport performance: a meta-analysis. <em>Journal of Sport and Exercise Psychology, 25</em>(1), 44-65.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Craft2003</span><span class='op'>)</span>
-</pre>
+    <pre class="examples"><div class='input'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Craft2003</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

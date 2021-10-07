@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Covariance between mean difference and risk difference — md_rd • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Computing Covariance between Mean Difference and Risk Difference — md_rd • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Covariance between mean difference and risk difference — md_rd" />
-<meta property="og:description" content="Compute covariance between mean difference and risk difference, when effect sizes are different." />
+<meta property="og:title" content="Computing Covariance between Mean Difference and Risk Difference — md_rd" />
+<meta property="og:description" content="The function lgor_rd computes covariance between mean difference and risk difference.  See mix.vcov for effect sizes of the same or different types." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
 
 
@@ -89,7 +89,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -100,6 +100,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -110,10 +111,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -146,13 +156,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Covariance between mean difference and risk difference</h1>
+    <h1>Computing Covariance between Mean Difference and Risk Difference</h1>
     
     <div class="hidden name"><code>md_rd.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute covariance between mean difference and risk difference, when effect sizes are different.</p>
+    <p>The function <code>lgor_rd</code> computes covariance between mean difference and risk difference.  See <code><a href='mix.vcov.html'>mix.vcov</a></code> for effect sizes of the same or different types.</p>
     </div>
 
     <pre class="usage"><span class='fu'>md_rd</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>n1c</span>, <span class='va'>n2c</span>, <span class='va'>n1t</span>, <span class='va'>n2t</span>,
@@ -168,51 +178,51 @@
     </tr>
     <tr>
       <th>n1c </th>
-      <td><p>Number of participants reporting outcome 1 in control group.</p></td>
+      <td><p>Number of participants reporting outcome 1 in the control group.</p></td>
     </tr>
     <tr>
       <th>n2c </th>
-      <td><p>Number of participants reporting outcome 2 in control group.</p></td>
+      <td><p>Number of participants reporting outcome 2 in the control group.</p></td>
     </tr>
     <tr>
       <th>n1t </th>
-      <td><p>Number of participants reporting outcome 1 in treatment group.</p></td>
+      <td><p>Number of participants reporting outcome 1 in the treatment group.</p></td>
     </tr>
     <tr>
       <th>n2t </th>
-      <td><p>Number of participants reporting outcome 2 in treatment group.</p></td>
+      <td><p>Number of participants reporting outcome 2 in the treatment group.</p></td>
     </tr>
     <tr>
       <th>n12c </th>
-      <td><p>Number of participants reporting both outcome 1 and outcome 2 in control group. By default, it is equal to the smaller number between n1c and n2c.</p></td>
+      <td><p>Number of participants reporting both outcome 1 and outcome 2 in the control group. By default, it is equal to the smaller number between <code>n1c</code> and <code>n2c</code>.</p></td>
     </tr>
     <tr>
       <th>n12t </th>
-      <td><p>Number defined in a similar way as n12c for treatment group.</p></td>
+      <td><p>Number defined in a similar way as <code>n12c</code> for the treatment group.</p></td>
     </tr>
     <tr>
       <th>s2c </th>
-      <td><p>Number of participants with event for outcome 2 (dichotomous) in control group.</p></td>
+      <td><p>Number of participants with event for outcome 2 (dichotomous) in the control group.</p></td>
     </tr>
     <tr>
       <th>s2t </th>
-      <td><p>Defined in a similar way as s2c for treatment group.</p></td>
+      <td><p>Defined in a similar way as <code>s2c</code> for the treatment group.</p></td>
     </tr>
     <tr>
       <th>f2c </th>
-      <td><p>Number of participants without event for outcome 2 (dichotomous) in control group.</p></td>
+      <td><p>Number of participants without event for outcome 2 (dichotomous) in the control group.</p></td>
     </tr>
     <tr>
       <th>f2t </th>
-      <td><p>Defined in a similar way as f2c for treatment group.</p></td>
+      <td><p>Defined in a similar way as <code>f2c</code> for the treatment group.</p></td>
     </tr>
     <tr>
       <th>sd1c </th>
-      <td><p>Sample standard deviation of outcome 1.</p></td>
+      <td><p>Sample standard deviation of outcome 1 for the control group.</p></td>
     </tr>
     <tr>
       <th>sd1t </th>
-      <td><p>Defined in a similar way as sd1c for treatment group.</p></td>
+      <td><p>Defined in a similar way as <code>sd1c</code> for the treatment group.</p></td>
     </tr>
     </table>
 
@@ -221,24 +231,57 @@
     <p>Min Lu</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Return the computed covariance.</p>
+    <p></p><table class='table'>
+<tr><td>rd</td><td>Computed risk difference for outcome 2.</td></tr>
+<tr><td>v</td><td>Computed covariance.</td></tr>
+</table>
+
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Ahn, S., Lu, M., Lefevor, G.T., Fedewa, A. &amp; Celimli, S. (2016). Application of meta-analysis in sport and exercise science. In N. Ntoumanis, &amp; N. Myers (Eds.), <em>An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists</em> (pp.233-253). Hoboken, NJ: John Wiley and Sons, Ltd.</p>
 <p>Wei, Y., &amp;  Higgins, J. (2013). Estimating within study covariances in multivariate meta-analysis with multiple outcomes. <em>Statistics in Medicine, 32</em>(7), 119-1205.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'>## simple example</span>
+    <pre class="examples"><div class='input'><span class='co'>## a simple example</span>
 <span class='fu'>md_rd</span><span class='op'>(</span>r <span class='op'>=</span> <span class='fl'>0.71</span>, n1c <span class='op'>=</span> <span class='fl'>34</span>, n2c <span class='op'>=</span> <span class='fl'>35</span>, n1t <span class='op'>=</span> <span class='fl'>25</span>, n2t <span class='op'>=</span> <span class='fl'>32</span>,
       s2c <span class='op'>=</span> <span class='fl'>5</span>, s2t <span class='op'>=</span> <span class='fl'>8</span>, f2c <span class='op'>=</span> <span class='fl'>30</span>, f2t <span class='op'>=</span> <span class='fl'>24</span>, sd1t <span class='op'>=</span> <span class='fl'>0.4</span>, sd1c <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>
-<span class='co'>## calculate covariances for variable SBP and DD in Geeganage2010 data</span>
+</div><div class='output co'>#&gt; $rd
+#&gt; [1] 0.1071429
+#&gt; 
+#&gt; $v
+#&gt; [1] 0.06063116
+#&gt; </div><div class='input'><span class='co'>## calculate covariances for variable SBP and DD in Geeganage2010 data</span>
 <span class='kw'><a href='https://rdrr.io/r/base/attach.html'>attach</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>
-<span class='va'>SBP_DD</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span><span class='op'>{</span><span class='fu'>md_rd</span><span class='op'>(</span>r <span class='op'>=</span> <span class='fl'>0.71</span>,
+</div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 3):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 4):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 5):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 6):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 7):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='input'><span class='va'>SBP_DD</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span><span class='op'>{</span><span class='fu'>md_rd</span><span class='op'>(</span>r <span class='op'>=</span> <span class='fl'>0.71</span>,
                n1c <span class='op'>=</span> <span class='va'>nc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, n2c <span class='op'>=</span> <span class='va'>nc_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, n1t <span class='op'>=</span> <span class='va'>nt_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, n2t <span class='op'>=</span> <span class='va'>nt_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>,
                sd1t <span class='op'>=</span> <span class='va'>sdt_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, s2t <span class='op'>=</span> <span class='va'>st_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, sd1c <span class='op'>=</span> <span class='va'>sdc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, s2c <span class='op'>=</span> <span class='va'>sc_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>,
-               f2c <span class='op'>=</span> <span class='va'>nc_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>sc_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, f2t <span class='op'>=</span> <span class='va'>nt_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>st_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span><span class='op'>)</span>
+               f2c <span class='op'>=</span> <span class='va'>nc_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>sc_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, f2t <span class='op'>=</span> <span class='va'>nt_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>st_DD</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span><span class='op'>$</span><span class='va'>v</span><span class='op'>}</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>SBP_DD</span>
-</pre>
+</div><div class='output co'>#&gt;  [1] 1.31282944 1.46226447 0.24609036 0.24375926 0.14406999 1.30604939
+#&gt;  [7] 0.17628538 0.08638135 0.30057845 0.23916473 0.07264930 0.62377857
+#&gt; [13] 0.58277535 1.43662352 0.05570118 0.30224261 1.02877434</div><div class='input'><span class='co'>## the function mix.vcov() should be used for dataset</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

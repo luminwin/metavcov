@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Covariance matrix for correlation coefficients — r.vcov • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Computing Variance-Covariance Matrices for Correlation Coefficients — r.vcov • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Covariance matrix for correlation coefficients — r.vcov" />
-<meta property="og:description" content="Compute variance-covariance matrix for multivariate meta-analysis when effect size is correlation coefficient." />
+<meta property="og:title" content="Computing Variance-Covariance Matrices for Correlation Coefficients — r.vcov" />
+<meta property="og:description" content="The function r.vcov computes variance-covariance matrix for multivariate meta-analysis when the effect size is measured by correlation coefficient." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
 
 
@@ -89,7 +89,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -100,6 +100,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -110,10 +111,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -146,31 +156,43 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Covariance matrix for correlation coefficients</h1>
+    <h1>Computing Variance-Covariance Matrices for Correlation Coefficients</h1>
     
     <div class="hidden name"><code>r.vcov.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute variance-covariance matrix for multivariate meta-analysis when effect size is correlation coefficient.</p>
+    <p>The function <code>r.vcov</code> computes variance-covariance matrix for multivariate meta-analysis when the effect size is measured by correlation coefficient.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>r.vcov</span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>corflat</span>, method <span class='op'>=</span> <span class='st'>"average"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>r.vcov</span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>corflat</span>, zscore <span class='op'>=</span> <span class='cn'>FALSE</span>, name <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"average"</span>, na.impute <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n </th>
-      <td><p>Sample sizes from studies.</p></td>
+      <td><p>A \(N\)-dimensional vector containing sample sizes from \(N\) studies.</p></td>
     </tr>
     <tr>
       <th>corflat </th>
-      <td><p>Correlation coefficients from studies.</p></td>
+      <td><p>A \(N \times p\) matrix or data frame storing \(p\) correlation coefficients from each of the \(N\) studies.</p></td>
+    </tr>
+    <tr>
+      <th>zscore </th>
+      <td><p>Whether the correlation coefficients in <code>corflat</code> are already transformed into Fisher's \(z\) scores.</p></td>
+    </tr>
+    <tr>
+      <th>name </th>
+      <td><p>A \(p\)-dimensional vector containing names for the \(p\) correlation coefficients.</p></td>
     </tr>
     <tr>
       <th>method </th>
-      <td><p>Method "average" computes variance covariances with sample-size weighted mean correlation coefficients from all studies; method "each" computes variance covariances with each of the corresponding correlation coefficients.</p></td>
+      <td><p>Method <code>"average"</code> computes variance and covariances with mean correlation coefficients that are sample-size weighted from all the \(N\) studies (missing values are omitted); method <code>"each"</code> computes variance and covariances with each of the corresponding correlation coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>na.impute </th>
+      <td><p>Missing values can be imputed by a numeric value, such as zero by setting <code>na.impute = 0</code>. With the default setting <code>na.impute = NA</code>, missing values are not imputed. If specifying <code>na.impute = "average"</code>, missing values are imputed by mean correlation coefficients that are sample-size weighted from the complete records.</p></td>
     </tr>
     </table>
 
@@ -179,57 +201,34 @@
     <p>Min Lu</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>How to arrange correlation coefficients of each study from matrix to vector is in Cooper et al book page 385 to 386. Details for average method are in book of Cooper et al page 388.</p>
+    <p>How to arrange correlation coefficients of each study from matrix to vector is in Cooper et al book page 385 to 386. Details for average method are in book of Cooper et al page 388. Let \(r_{ist}\) denote the sample correlation coefficient that describes the relationship between variables \(s\) and \(t\) in study \(i\). We can calculate its variance as
+\(var({{r}_{ist}})={{(1-\rho_{ist}^{2})}^{2}}/{{n}_{i}},\) and the covariance between two correlation coefficients is
+$$
+	cov({{r}_{ist}},{{r}_{iuv}})=[.5{{\rho }_{ist}}{{\rho }_{iuv}}({{\rho }}_{isu}^{2}+{{\rho }}_{isv}^{2}+{{\rho }}_{itu}^{2}+{{\rho }}_{itv}^{2})+{{\rho }_{isu}}{{\rho }_{itv}}+{{\rho }_{isv}}{{\rho }_{itu}} \nonumber \\
+	 -({{\rho }_{ist}}{{\rho }_{isu}}{{\rho }_{isv}}+{{\rho }_{its}}{{\rho }_{itu}}{{\rho }_{itv}}+{{\rho }_{ius}}{{\rho }_{iut}}{{\rho }_{iuv}}+{{\rho }_{ivs}}{{\rho }_{ivt}}{{\rho }_{ivu}})]/{{n}_{i}},
+$$
+where \(\rho_{i..}\) represents the population value. In practice, \(\rho_{i..}\) can be substituted by the observed sample correlation or sample-size weighted mean correlation coefficients from all studies.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     
 
-<dt>list.rcov </dt><dd><p>A list of computed Variance-covariance matrices.</p></dd>
-<dt>rcov </dt><dd><p>A matrix whose rows are computed Variance-covariance vectors.</p></dd>
-<dt>zr </dt><dd><p>Z transformed correlation coefficients from input "corflat".</p></dd>
-<dt>list.rcov </dt><dd><p>A list of computed Variance-covariance matrices from z transformed correlation coefficients.</p></dd>
-<dt>zcov </dt><dd><p>A matrix whose rows are computed Variance-covariance vectors from z transformed correlation coefficients.</p></dd>
+<dt>r </dt><dd><p>A \(N \times p\) data frame that contains the input argument <code>corflat</code> with column names and imputed values according to the input argument <code>na.impute</code>. If the input argument <code>zscore=TRUE</code>, <code>r</code> is transformed from Fisher's \(z\) score in <code>corflat</code>.</p></dd>
+<dt>list.rvcov </dt><dd><p>A \(N\)-dimensional list of \(p(p+1)/2 \times p(p+1)/2\) matrices of computed variance-covariance matrices.</p></dd>
+<dt>matrix.rvcov </dt><dd><p>A \(N \times p(p+1)/2\) matrix whose rows are computed variance-covariance vectors.</p></dd>
+<dt>ef </dt><dd><p>A \(N \times p\) data frame that contains Fisher's \(z\) transformed correlation coefficients from the input argument <code>corflat</code> with column names and imputed values according to the input argument <code>na.impute</code>.</p></dd>
+<dt>list.vcov </dt><dd><p>A list in the same format of <code>list.rvcov</code> for Fisher's \(z\) transformed correlation coefficients.</p></dd>
+<dt>matrix.vcov </dt><dd><p>A matrix <code>matrix.rvcov</code> for Fisher's \(z\) transformed correlation coefficients.</p></dd>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Ahn, S., Lu, M., Lefevor, G.T., Fedewa, A. &amp; Celimli, S. (2016). Application of meta-analysis in sport and exercise science. In N. Ntoumanis, &amp; N. Myers (Eds.), <em>An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists</em> (pp.233-253). Hoboken, NJ: John Wiley and Sons, Ltd.</p>
-<p>Cooper, H., Hedges, L.V., &amp; Valentine, J.C. (Eds.) (2009). <em>The handbook of research synthesis and 
+<p>Cooper, H., Hedges, L.V., &amp; Valentine, J.C. (Eds.) (2009). <em>The handbook of research synthesis and
 meta-analysis.</em> New York: Russell Sage Foundation.</p>
-<p>Olkin, I., &amp; Ishii, G. (1976). Asymptotic distribution of functions of a correlation matrix. In S. Ikeda (Ed.), 
-<em>Essays in probability and statistics: A volume in honor of Professor Junjiro Ogawa</em> (pp.5-51). Tokyo, 
+<p>Olkin, I., &amp; Ishii, G. (1976). Asymptotic distribution of functions of a correlation matrix. In S. Ikeda (Ed.),
+<em>Essays in probability and statistics: A volume in honor of Professor Junjiro Ogawa</em> (pp.5-51). Tokyo,
 Japan: Shinko Tsusho.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">  <span class='co'>######################################################</span>
-  <span class='co'># Example: Craft2003 data</span>
-  <span class='co'># Preparing covariances for multivariate meta-analysis</span>
-  <span class='co'>######################################################</span>
-  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Craft2003</span><span class='op'>)</span>
-  <span class='co'>#extract correlation from the dataset (craft)</span>
-  <span class='va'>corflat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Craft2003</span>, select<span class='op'>=</span><span class='va'>C1</span><span class='op'>:</span><span class='va'>C6</span><span class='op'>)</span>
-  <span class='co'># transform correlations to z and compute variance-covariance matrix.</span>
-  <span class='va'>computvocv</span> <span class='op'>&lt;-</span> <span class='fu'>r.vcov</span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>Craft2003</span><span class='op'>$</span><span class='va'>N</span>, corflat <span class='op'>=</span> <span class='va'>corflat</span>, method <span class='op'>=</span> <span class='st'>"average"</span><span class='op'>)</span>
-  <span class='co'># name transformed z scores as an input</span>
-  <span class='va'>Input</span> <span class='op'>&lt;-</span> <span class='va'>computvocv</span><span class='op'>$</span><span class='va'>zr</span>
-  <span class='co'># name variance-covariance matrix of trnasformed z scores as covars</span>
-  <span class='va'>covars</span> <span class='op'>&lt;-</span> <span class='va'>computvocv</span><span class='op'>$</span><span class='va'>zcov</span>
-  <span class='co'>#####################################################</span>
-  <span class='co'># Running random-effects model using package "mvmeta"</span>
-  <span class='co'>#####################################################</span>
-  <span class='co'>#library(mvmeta)</span>
-  <span class='co'>#mvmeta_RE &lt;- summary(mvmeta(cbind(C1, C2, C3, C4, C5, C6),</span>
-  <span class='co'>#                           S = covars, data = Input, method = "reml"))</span>
-  <span class='co'>#mvmeta_RE</span>
-  <span class='co'>##############################################################</span>
-  <span class='co'># Another example:</span>
-  <span class='co'># Checking the example in Harris Cooper et al.'s book page 388</span>
-  <span class='co'>##############################################################</span>
-<span class='va'>r1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.074</span>, <span class='op'>-</span><span class='fl'>0.127</span>, <span class='fl'>0.324</span>, <span class='fl'>0.523</span>, <span class='op'>-</span><span class='fl'>0.416</span>, <span class='op'>-</span><span class='fl'>0.414</span><span class='op'>)</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='va'>r1</span>, <span class='va'>r1</span><span class='op'>)</span> <span class='co'>### the r.vcov is to handle at least two studies</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>142</span>, <span class='fl'>142</span><span class='op'>)</span>
-<span class='va'>computvcov</span> <span class='op'>&lt;-</span> <span class='fu'>r.vcov</span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>n</span>, corflat <span class='op'>=</span> <span class='va'>r</span>, method <span class='op'>=</span> <span class='st'>"average"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>computvcov</span><span class='op'>$</span><span class='va'>list.rcov</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>, <span class='fl'>4</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>computvcov</span><span class='op'>$</span><span class='va'>list.zcov</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>, <span class='fl'>4</span><span class='op'>)</span>
-</pre>
+    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

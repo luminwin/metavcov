@@ -1,34 +1,46 @@
-r.vcov <- function(n, corflat, method = "average")
-{ # requireNamespace("corpcor")
- #library(corpcor)
-  vec2sm <- function (vec, diag = FALSE, order = NULL)
-  {
-    n = (sqrt(1 + 8 * length(vec)) + 1)/2
-    if (diag == TRUE)
-      n <- n - 1
-    if (ceiling(n) != floor(n))
-      stop("Length of vector incompatible with symmetric matrix")
-    m <- matrix(NA, nrow = n, ncol = n)
-    lo <- lower.tri(m, diag)
-    if (is.null(order)) {
-      m[lo] <- vec
-    }
-    else {
-      vec.in.order <- rep(NA, length(order))
-      vec.in.order[order] <- vec
-      m[lo] <- vec.in.order
-    }
-    for (i in 1:(n - 1)) for (j in (i + 1):n) m[i, j] <- m[j,
-                                                          i]
-    return(m)
-  }
+rToz <- function(x) 0.5*log((1 + x)/(1 - x))
+smTovec <- function(x) { as.vector(x[lower.tri(x, diag = TRUE)])}
 
-  function (m, diag = FALSE)
-  {
-    return(as.vector(m[lower.tri(m, diag)]))
-  }
+vecTosm <- function (vec, diag = FALSE)
+{
+  n = (sqrt(1 + 8 * length(vec)) + 1)/2
+  if (diag == TRUE)
+    n <- n - 1
+  if (ceiling(n) != floor(n))
+    stop("Length of vector incompatible with symmetric matrix")
+  m <- matrix(NA, nrow = n, ncol = n)
+  lo <- lower.tri(m, diag)
 
+  m[lo] <- vec
+
+  for (i in 1:(n - 1)) for (j in (i + 1):n) m[i, j] <- m[j, i]
+  return(m)
+}
+
+r.vcov <- function(n, corflat, zscore = FALSE, name = NULL, method = "average", na.impute = NA)
+{
+  if (zscore == TRUE) {corflat <- tanh(corflat)}
   colum.number <- ncol(corflat)
+
+  if (is.null(name)){
+    if (is.null(colnames(corflat))) {
+      name <- paste("C", 1:colum.number, sep = "")
+    } else {
+      name <- colnames(corflat)
+    }
+  } else {
+    name <- name[1:colum.number]
+  }
+  colnames(corflat) <- name
+
+  cov.name <- c()
+  for (i in 1:colum.number){
+    if (i == colum.number){ temp <- NULL} else {
+      temp <-  paste("cov",name[i], name, sep = "_")[(i+1):colum.number]
+    }
+    cov.name <- c(cov.name, paste("var", name[i], sep = "_"), temp)
+  }
+
   V <- round(sqrt(2*colum.number + 1/4) + 0.5,0)
 
   if (length(n) == 1)
@@ -36,13 +48,21 @@ r.vcov <- function(n, corflat, method = "average")
   else
   { K <- nrow(corflat)}
 
+  temp <- unlist(lapply(1:colum.number, function(i, corflat,n){weighted.mean(corflat[, i], n, na.rm = TRUE)}, corflat = corflat, n = n))
+  corflat.m <- matrix(rep(temp, K), K, colum.number, byrow = "TRUE")
+
+  if (is.na(na.impute)) { corflat[is.na(corflat)] <- na.impute }
+  else if (na.impute == "average") { corflat[is.na(corflat)] <- corflat.m[is.na(corflat)]} else {
+    corflat[is.na(corflat)] <- na.impute
+  }
+  rr.corflat <- corflat
 
   col.vac.number <- (colum.number+1)*colum.number/2
-  corr.st.varcovar <- matrix(NA, K, col.vac.number)
-  list.corr.st.varcovar <- list()
+  rcov <- matrix(NA, K, col.vac.number)
+  list.rcov <- list()
 
-  z.corr.st.varcovar <- matrix(NA, K, col.vac.number)
-  list.z.corr.st.varcovar <- list()
+  zcov <- matrix(NA, K, col.vac.number)
+  list.zcov <- list()
   zz.corflat <- corflat
   for (i in 1:K){
     for (j in 1:colum.number)
@@ -53,21 +73,15 @@ r.vcov <- function(n, corflat, method = "average")
 
   if (method == "each")
   {corflat <- corflat
-   z.corflat <- corflat
-   for (i in 1:K){
-     for (j in 1:colum.number)
-     {
-       z.corflat[i, j] <- 0.5*log((1 + corflat[i, j])/(1 - corflat[i, j]))
-     }
-   }
+   z.corflat <- zz.corflat
   }
 
-  if (method == "average")
-  {temp <- unlist(lapply(1:colum.number, function(i, corflat,n){weighted.mean(corflat[, i], n)}, corflat = corflat, n = n))
-   corflat <- matrix(rep(temp, K), K, colum.number, byrow = "TRUE")
+  if (method == "average"){
+    corflat <- corflat.m
 
-   temp <- unlist(lapply(1:colum.number, function(i, corflat,n){weighted.mean(corflat[,i], n)}, corflat = zz.corflat, n = n))
-   z.corflat <- matrix(rep(temp, K), K, colum.number, byrow = "TRUE")}
+    temp <- unlist(lapply(1:colum.number, function(i, corflat,n){weighted.mean(corflat[,i], n, na.rm = TRUE)}, corflat = zz.corflat, n = n))
+    z.corflat <- matrix(rep(temp, K), K, colum.number, byrow = "TRUE")
+  }
 
   sum <- 0
   iii <- 1
@@ -100,13 +114,18 @@ r.vcov <- function(n, corflat, method = "average")
 
   for (k in 1:K)
   {
-    r <- vec2sm(t(corflat[k, ]), diag = FALSE)
-    r[is.na(r)] <- 1
+    r <- vecTosm(t(corflat[k, ]), diag = FALSE)
+    diag(r) <- 1
+
+    if (is.na(na.impute)) { corflat[is.na(corflat)] <- na.impute }
+    else if (na.impute == "average"){
+      r[is.na(r)] <- vecTosm(t(corflat.m[k, ]), diag = FALSE)[is.na(r)]
+    } else { r[is.na(r)] <- na.impute }
 
     for  (ii in 1:col.vac.number)
     {
 
-      corr.st.varcovar[k, ii] <- (0.5*r[sub[ii,]$s,sub[ii,]$t]*r[sub[ii,]$u, sub[ii,]$v]*((r[sub[ii,]$s,sub[ii,]$u])^2
+      rcov[k, ii] <- (0.5*r[sub[ii,]$s,sub[ii,]$t]*r[sub[ii,]$u, sub[ii,]$v]*((r[sub[ii,]$s,sub[ii,]$u])^2
                                                                                       + (r[sub[ii,]$s,sub[ii,]$v])^2
                                                                                       + (r[sub[ii,]$t,sub[ii,]$u])^2+(r[sub[ii,]$t,sub[ii,]$v])^2) + r[sub[ii,]$s,sub[ii,]$u]*r[sub[ii,]$t,sub[ii,]$v]
                                + r[sub[ii,]$s, sub[ii,]$v]*r[sub[ii,]$t, sub[ii,]$u]
@@ -116,34 +135,33 @@ r.vcov <- function(n, corflat, method = "average")
                                  + r[sub[ii,]$v, sub[ii,]$s]*r[sub[ii,]$v, sub[ii,]$t]*r[sub[ii,]$v, sub[ii,]$u]))/n[k]
     }
 
-    r <- vec2sm(t(z.corflat[k,]), diag = FALSE)
-    r[is.na(r)] <- 1
-
     for  (ii in 1:col.vac.number)
     {
-      z.corr.st.varcovar[k, ii] <- (0.5*r[sub[ii,]$s, sub[ii,]$t]*r[sub[ii,]$u,sub[ii,]$v]*((r[sub[ii,]$s,sub[ii,]$u])^2
-                                                                                        + (r[sub[ii,]$s,sub[ii,]$v])^2
-                                                                                        + (r[sub[ii,]$t,sub[ii,]$u])^2 + (r[sub[ii,]$t, sub[ii,]$v])^2) + r[sub[ii,]$s, sub[ii,]$u]*r[sub[ii,]$t, sub[ii,]$v]
-                                 + r[sub[ii,]$s, sub[ii,]$v]*r[sub[ii,]$t, sub[ii,]$u]
-                                 - (r[sub[ii,]$s, sub[ii,]$t]*r[sub[ii,]$s, sub[ii,]$u]*r[sub[ii,]$s, sub[ii,]$v]
-                                   + r[sub[ii,]$t, sub[ii,]$s]*r[sub[ii,]$t, sub[ii,]$u]*r[sub[ii,]$t, sub[ii,]$v]
-                                   + r[sub[ii,]$u, sub[ii,]$s]*r[sub[ii,]$u, sub[ii,]$t]*r[sub[ii,]$u, sub[ii,]$v]
-                                   + r[sub[ii,]$v, sub[ii,]$s]*r[sub[ii,]$v, sub[ii,]$t]*r[sub[ii,]$v, sub[ii,]$u]))/n[k]/(1 - (r[sub[ii,]$s,sub[ii,]$t])^2)/(1 - (r[sub[ii,]$u,sub[ii,]$v])^2)
+      zcov[k, ii] <- rcov[k, ii]/(1 - (r[sub[ii,]$s,sub[ii,]$t])^2)/(1 - (r[sub[ii,]$u,sub[ii,]$v])^2)
     }
 
-    list.corr.st.varcovar[[k]] <- vec2sm(corr.st.varcovar[k,], diag = TRUE)
+    list.rcov[[k]] <- vecTosm(rcov[k,], diag = TRUE)
+    colnames(list.rcov[[k]]) <- rownames(list.rcov[[k]]) <- name
 
 
-    list.z.corr.st.varcovar[[k]] <- vec2sm(z.corr.st.varcovar[k,], diag = TRUE)
+    list.zcov[[k]] <- vecTosm(zcov[k,], diag = TRUE)
   }
 
-  temp <- list.z.corr.st.varcovar
-  list.z.corr.st.varcovar <- lapply(1:K, function(k, temp, n){tempp <- diag(temp[[k]])
-                                                         diag(temp[[k]]) <- tempp*(n[k]/(n[k] - 3))
+  temp <- list.zcov
+  list.zcov <- lapply(1:K, function(k, temp, n){tempp <- diag(temp[[k]])
+                                                         diag(temp[[k]]) <- tempp*(n[k]/(n[k] - 3))  # confirm this is the same as 1/(n[k] - 3)
+                                                         colnames(temp[[k]]) <- rownames(temp[[k]]) <- name
                                                          temp[[k]]}, temp <- temp, n = n)
 
-  z.corr.st.varcovar <- matrix(unlist(lapply(1:K, function(k, list.z.corr.st.varcovar){sm2vec(list.z.corr.st.varcovar[[k]], diag = TRUE)}, list.z.corr.st.varcovar = list.z.corr.st.varcovar)), K, col.vac.number, byrow = TRUE)
+  zcov <- matrix(unlist(lapply(1:K, function(k, list.zcov){smTovec(list.zcov[[k]])}, list.zcov = list.zcov)), K, col.vac.number, byrow = TRUE)
 
-  return(list(list.rcov = list.corr.st.varcovar, rcov = corr.st.varcovar, zr = zz.corflat, zcov = z.corr.st.varcovar, list.zcov = list.z.corr.st.varcovar))
+  colnames(rcov) <- colnames(zcov) <- cov.name
+
+  return(list(r = as.data.frame(rr.corflat),
+              list.rvcov = list.rcov,
+              matrix.rvcov = rcov,
+              ef = as.data.frame(zz.corflat),
+              matrix.vcov = zcov,
+              list.vcov = list.zcov))
 
 }

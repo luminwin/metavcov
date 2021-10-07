@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>An Introduction to metavcov • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>An Introduction to metavcov • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="An Introduction to metavcov">
-<meta property="og:description" content="this package">
+<meta property="og:description" content="metavcov">
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -43,7 +43,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -54,6 +54,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -64,10 +65,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -101,9 +111,9 @@
       <h1 data-toc-skip>An Introduction to metavcov</h1>
                         <h4 class="author"><a href="https://luminwin.github.io/Lu/articles/cv.html">Min Lu</a></h4>
             
-            <h4 class="date">2021-08-28</h4>
+            <h4 class="date">2021-10-07</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/luminwin/metavcov/blob/master/vignettes/intro.Rmd"><code>vignettes/intro.Rmd</code></a></small>
       <div class="hidden name"><code>intro.Rmd</code></div>
 
     </div>
@@ -226,7 +236,7 @@ font-size: 16px;
 <span id="cb4-5"><a href="#cb4-5"></a>  <span class="co"># transform correlations to z and compute variance-covariance matrix.</span></span>
 <span id="cb4-6"><a href="#cb4-6"></a>  computvocv &lt;-<span class="st"> </span><span class="kw">r.vcov</span>(<span class="dt">n =</span> Craft2003<span class="op">$</span>N, <span class="dt">corflat =</span> corflat, <span class="dt">method =</span> <span class="st">"average"</span>)</span>
 <span id="cb4-7"><a href="#cb4-7"></a>  <span class="co"># name transformed z scores as an input</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>  Input &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zr</span>
+<span id="cb4-8"><a href="#cb4-8"></a>  Input &lt;-<span class="st"> </span>computvocv<span class="op">$</span>ef</span>
 <span id="cb4-9"><a href="#cb4-9"></a>  <span class="kw">head</span>(Input)</span>
 <span id="cb4-10"><a href="#cb4-10"></a>  </span>
 <span id="cb4-11"><a href="#cb4-11"></a>  <span class="op">&gt;</span><span class="st">          </span>C1         C2         C3          C4          C5          C6</span>
@@ -238,7 +248,7 @@ font-size: 16px;
 <span id="cb4-17"><a href="#cb4-17"></a><span class="op">&gt;</span><span class="st"> </span><span class="dv">6</span> <span class="fl">0.8107431</span> <span class="fl">-0.3768859</span> <span class="fl">-0.9076450</span> <span class="fl">-0.15114044</span> <span class="fl">-0.42364893</span>  <span class="fl">0.36544375</span></span>
 <span id="cb4-18"><a href="#cb4-18"></a>  <span class="co"># name variance-covariance matrix of trnasformed z scores as covars</span></span>
 <span id="cb4-19"><a href="#cb4-19"></a>  </span>
-<span id="cb4-20"><a href="#cb4-20"></a>  covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zcov</span>
+<span id="cb4-20"><a href="#cb4-20"></a>  covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>matrix.vcov</span>
 <span id="cb4-21"><a href="#cb4-21"></a>  <span class="kw">head</span>(covars)</span>
 <span id="cb4-22"><a href="#cb4-22"></a>  </span>
 <span id="cb4-23"><a href="#cb4-23"></a>  <span class="op">&gt;</span><span class="st">            </span>[,<span class="dv">1</span>]         [,<span class="dv">2</span>]        [,<span class="dv">3</span>]         [,<span class="dv">4</span>]         [,<span class="dv">5</span>]</span>
@@ -353,7 +363,7 @@ font-size: 16px;
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="op">&gt;</span><span class="st"> </span>r &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">0.074</span>, <span class="fl">-0.127</span>, <span class="fl">0.324</span>, <span class="fl">0.523</span>, <span class="fl">-0.416</span>, <span class="fl">-0.414</span>), <span class="dv">1</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="op">&gt;</span><span class="st"> </span>n &lt;-<span class="st"> </span><span class="dv">142</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="op">&gt;</span><span class="st"> </span>computvcov &lt;-<span class="st"> </span><span class="kw">r.vcov</span>(<span class="dt">n =</span> n, <span class="dt">corflat =</span> r, <span class="dt">method =</span> <span class="st">"average"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">round</span>(computvcov<span class="op">$</span>list.rcov[[<span class="dv">1</span>]], <span class="dv">4</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">round</span>(computvcov<span class="op">$</span>list.rvcov[[<span class="dv">1</span>]], <span class="dv">4</span>)</span>
 <span id="cb7-5"><a href="#cb7-5"></a>        [,<span class="dv">1</span>]    [,<span class="dv">2</span>]    [,<span class="dv">3</span>]    [,<span class="dv">4</span>]    [,<span class="dv">5</span>]    [,<span class="dv">6</span>]</span>
 <span id="cb7-6"><a href="#cb7-6"></a>[<span class="dv">1</span>,]  <span class="fl">0.0070</span>  <span class="fl">0.0036</span> <span class="fl">-0.0025</span> <span class="fl">-0.0005</span>  <span class="fl">0.0018</span>  <span class="fl">0.0009</span></span>
 <span id="cb7-7"><a href="#cb7-7"></a>[<span class="dv">2</span>,]  <span class="fl">0.0036</span>  <span class="fl">0.0068</span> <span class="fl">-0.0025</span> <span class="fl">-0.0002</span>  <span class="fl">0.0008</span>  <span class="fl">0.0017</span></span>
@@ -361,7 +371,7 @@ font-size: 16px;
 <span id="cb7-9"><a href="#cb7-9"></a>[<span class="dv">4</span>,] <span class="fl">-0.0005</span> <span class="fl">-0.0002</span>  <span class="fl">0.0001</span>  <span class="fl">0.0037</span> <span class="fl">-0.0013</span> <span class="fl">-0.0013</span></span>
 <span id="cb7-10"><a href="#cb7-10"></a>[<span class="dv">5</span>,]  <span class="fl">0.0018</span>  <span class="fl">0.0008</span>  <span class="fl">0.0000</span> <span class="fl">-0.0013</span>  <span class="fl">0.0048</span>  <span class="fl">0.0022</span></span>
 <span id="cb7-11"><a href="#cb7-11"></a>[<span class="dv">6</span>,]  <span class="fl">0.0009</span>  <span class="fl">0.0017</span> <span class="fl">-0.0003</span> <span class="fl">-0.0013</span>  <span class="fl">0.0022</span>  <span class="fl">0.0048</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">round</span>(computvcov<span class="op">$</span>list.zcov[[<span class="dv">1</span>]], <span class="dv">4</span>)</span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">round</span>(computvcov<span class="op">$</span>list.vcov[[<span class="dv">1</span>]], <span class="dv">4</span>)</span>
 <span id="cb7-13"><a href="#cb7-13"></a>        [,<span class="dv">1</span>]    [,<span class="dv">2</span>]    [,<span class="dv">3</span>]    [,<span class="dv">4</span>]    [,<span class="dv">5</span>]    [,<span class="dv">6</span>]</span>
 <span id="cb7-14"><a href="#cb7-14"></a>[<span class="dv">1</span>,]  <span class="fl">0.0072</span>  <span class="fl">0.0041</span> <span class="fl">-0.0030</span> <span class="fl">-0.0007</span>  <span class="fl">0.0023</span>  <span class="fl">0.0012</span></span>
 <span id="cb7-15"><a href="#cb7-15"></a>[<span class="dv">2</span>,]  <span class="fl">0.0041</span>  <span class="fl">0.0072</span> <span class="fl">-0.0030</span> <span class="fl">-0.0003</span>  <span class="fl">0.0011</span>  <span class="fl">0.0022</span></span>
@@ -373,8 +383,8 @@ font-size: 16px;
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="op">&gt;</span><span class="st"> </span><span class="kw">data</span>(Craft2003)</span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="op">&gt;</span><span class="st"> </span>corflat &lt;-<span class="st"> </span><span class="kw">subset</span>(Craft2003, <span class="dt">select=</span>C1<span class="op">:</span>C6)</span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="op">&gt;</span><span class="st"> </span>computvocv &lt;-<span class="st"> </span><span class="kw">r.vcov</span>(<span class="dt">n =</span> Craft2003<span class="op">$</span>N, <span class="dt">corflat =</span> corflat, <span class="dt">method =</span> <span class="st">"average"</span>)</span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="op">&gt;</span><span class="st"> </span>input &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zr</span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="op">&gt;</span><span class="st"> </span>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>zcov</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="op">&gt;</span><span class="st"> </span>input &lt;-<span class="st"> </span>computvocv<span class="op">$</span>ef</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="op">&gt;</span><span class="st"> </span>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>matrix.vcov</span>
 <span id="cb8-6"><a href="#cb8-6"></a></span>
 <span id="cb8-7"><a href="#cb8-7"></a><span class="op">&gt;</span><span class="st"> </span>covars[<span class="dv">1</span>,]</span>
 <span id="cb8-8"><a href="#cb8-8"></a>[<span class="dv">1</span>]  <span class="fl">0.0476190476</span>  <span class="fl">0.0003351688</span>  <span class="fl">0.0021381126</span> <span class="fl">-0.0105790705</span> <span class="fl">-0.0137617708</span></span>
@@ -409,7 +419,7 @@ font-size: 16px;
 <span id="cb9-3"><a href="#cb9-3"></a>r12 &lt;-<span class="st"> </span><span class="fl">0.71</span></span>
 <span id="cb9-4"><a href="#cb9-4"></a>r.Gee &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(Geeganage2010), <span class="cf">function</span>(i){<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, r12, r12, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)})</span>
 <span id="cb9-5"><a href="#cb9-5"></a>computvocv &lt;-<span class="st"> </span><span class="kw">smd.vcov</span>(<span class="dt">nt =</span> <span class="kw">subset</span>(Geeganage2010, <span class="dt">select =</span> <span class="kw">c</span>(nt_SBP, nt_DBP)),</span>
-<span id="cb9-6"><a href="#cb9-6"></a>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>smd.cov</span>
+<span id="cb9-6"><a href="#cb9-6"></a>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>matrix.vcov</span>
 <span id="cb9-7"><a href="#cb9-7"></a><span class="kw">head</span>(covars)</span>
 <span id="cb9-8"><a href="#cb9-8"></a></span>
 <span id="cb9-9"><a href="#cb9-9"></a>           [,<span class="dv">1</span>]       [,<span class="dv">2</span>]       [,<span class="dv">3</span>]</span>
@@ -420,7 +430,7 @@ font-size: 16px;
 <span id="cb9-14"><a href="#cb9-14"></a>[<span class="dv">5</span>,] <span class="fl">0.01965510</span> <span class="fl">0.01395547</span> <span class="fl">0.01967717</span></span>
 <span id="cb9-15"><a href="#cb9-15"></a>[<span class="dv">6</span>,] <span class="fl">0.26813782</span> <span class="fl">0.18910349</span> <span class="fl">0.26680797</span></span>
 <span id="cb9-16"><a href="#cb9-16"></a></span>
-<span id="cb9-17"><a href="#cb9-17"></a>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>smd.cov.d</span>
+<span id="cb9-17"><a href="#cb9-17"></a>covars &lt;-<span class="st"> </span>computvocv<span class="op">$</span>matrix.dvcov</span>
 <span id="cb9-18"><a href="#cb9-18"></a><span class="kw">head</span>(covars)</span>
 <span id="cb9-19"><a href="#cb9-19"></a></span>
 <span id="cb9-20"><a href="#cb9-20"></a>           [,<span class="dv">1</span>]       [,<span class="dv">2</span>]       [,<span class="dv">3</span>]</span>

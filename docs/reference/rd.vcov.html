@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Covariance matrix for risk differences — rd.vcov • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Computing Variance-Covariance Matrices for Risk Differences — rd.vcov • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Covariance matrix for risk differences — rd.vcov" />
-<meta property="og:description" content="Compute variance-covariance matrix for multivariate meta-analysis when effect size is risk difference." />
+<meta property="og:title" content="Computing Variance-Covariance Matrices for Risk Differences — rd.vcov" />
+<meta property="og:description" content="The function lgOR.vcov computes effect sizes and variance-covariance matrix for multivariate meta-analysis when the effect sizes of interest are all measured by risk difference. See mix.vcov for effect sizes of the same or different types." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
 
 
@@ -89,7 +89,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -100,6 +100,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -110,10 +111,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -146,47 +156,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Covariance matrix for risk differences</h1>
+    <h1>Computing Variance-Covariance Matrices for Risk Differences</h1>
     
     <div class="hidden name"><code>rd.vcov.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute variance-covariance matrix for multivariate meta-analysis when effect size is risk difference.</p>
+    <p>The function <code>lgOR.vcov</code> computes effect sizes and variance-covariance matrix for multivariate meta-analysis when the effect sizes of interest are all measured by risk difference. See <code><a href='mix.vcov.html'>mix.vcov</a></code> for effect sizes of the same or different types.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rd.vcov</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>nt</span>, <span class='va'>nc</span>, <span class='va'>st</span>, <span class='va'>sc</span>, n_rt <span class='op'>=</span> <span class='fl'>0</span>, n_rc <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rd.vcov</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>nt</span>, <span class='va'>nc</span>, <span class='va'>st</span>, <span class='va'>sc</span>, n_rt <span class='op'>=</span> <span class='cn'>NA</span>, n_rc <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>r </th>
-      <td><p>A list of correlation coefficient matrices of the outcomes from the studies. r[[k]][i,j] is the correlation coefficient between outcome i and outcome j from study k.</p></td>
+      <th>r</th>
+      <td><p>A \(N\)-dimensional list of \(p \times p\) correlation matrices for the \(p\) outcomes from the \(N\) studies. <code>r[[k]][i,j]</code> is the correlation coefficient between outcome \(i\) and outcome \(j\) from study \(k\).</p></td>
     </tr>
     <tr>
       <th>nt </th>
-      <td><p>Sample sizes in the treatment group reporting each of the outcome. nt[i,j] means the sample size from study i reporting outcome j.</p></td>
+      <td><p>A \(N \times p\) matrix storing sample sizes in the treatment group reporting the  \(p\) outcomes. <code>nt[i,j]</code> is the sample size from study \(i\) reporting outcome \(j\).</p></td>
     </tr>
     <tr>
       <th>nc </th>
-      <td><p>Defined in a similar way as nt for control group.</p></td>
+      <td><p>A matrix defined in a similar way as <code>nt</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>st </th>
-      <td><p>Number of participants with event for all outcomes (dichotomous) in treatment group. st[i,j] is number of participants with event for outcome j in treatment group.</p></td>
+      <td><p>A \(N \times p\) matrix recording number of participants with event for all outcomes (dichotomous) in treatment group. <code>st[i,j]</code> reports number of participants with event for outcome \(j\) in treatment group for study \(i\). If outcome \(j\) is not dichotomous, NA has to be imputed in column \(j\).</p></td>
     </tr>
     <tr>
       <th>sc </th>
-      <td><p>Defined in a similar way as st for control group.</p></td>
+      <td><p>Defined in a similar way as <code>st</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>n_rt </th>
-      <td><p>A list of matrices storing sample sizes in the treatment group reporting pairwised outcomes in the off diagonal elements. n_rt[[k]][i,j] means the sample size reporting both outcome i and outcome j from study k. Diagonal elements of these matrices are not used. The default value is zero, which means the smaller sample size reporting the corresponding two outcomes: i.e. n_rt[[k]][i,j]=min(nt[k,i],nt[k,j]).</p></td>
+      <td><p>A \(N\)-dimensional list of \(p \times p\) matrices storing sample sizes in the treatment group reporting pairwise outcomes in the off-diagonal elements. <code>n_rt[[k]][i,j]</code> is the sample size reporting both outcome \(i\) and outcome \(j\) from study \(k\). Diagonal elements of these matrices are discarded. The default value is <code>NA</code>, which means that the smaller sample size reporting the corresponding two outcomes is imputed: i.e. <code>n_rt[[k]][i,j]=min(nt[k,i],nt[k,j])</code>.</p></td>
     </tr>
     <tr>
       <th>n_rc </th>
-      <td><p>Defined in a similar way as n_rt for control group.</p></td>
+      <td><p>A list defined in a similar way as <code>n_rt</code> for the control group.</p></td>
     </tr>
     </table>
 
@@ -195,19 +205,19 @@
     <p>Min Lu</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p></p><table class='table'>
-<tr><td>rd</td><td>Computed risk difference from input.</td></tr>
-<tr><td>list.lgOR.cov</td><td>A list of computed variance-covariance matrices.</td></tr>
-<tr><td>lgOR.cov</td><td>A matrix whose rows are computed variance-covariance vectors.</td></tr>
-</table>
+    
 
+<dt> ef</dt><dd><p>A \(N \times p\) data frame whose columns are computed risk differences.</p></dd>
+<dt>list.vcov </dt><dd><p>A \(N\)-dimensional list of \(p(p+1)/2 \times p(p+1)/2\) matrices of computed variance-covariance matrices.</p></dd>
+<dt>matrix.vcov </dt><dd><p>A \(N \times p(p+1)/2\) matrix whose rows are computed variance-covariance vectors.</p></dd>
+  
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Ahn, S., Lu, M., Lefevor, G.T., Fedewa, A. &amp; Celimli, S. (2016). Application of meta-analysis in sport and exercise science. In N. Ntoumanis, &amp; N. Myers (Eds.), <em>An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists</em> (pp.233-253). Hoboken, NJ: John Wiley and Sons, Ltd.</p>
 <p>Wei, Y., &amp;  Higgins, J. (2013). Estimating within study covariances in multivariate meta-analysis with multiple outcomes. <em>Statistics in Medicine, 32</em>(7), 119-1205.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'>###########################################################################</span>
+    <pre class="examples"><div class='input'><span class='co'>###########################################################################</span>
 <span class='co'># Example: Geeganage2010 data</span>
 <span class='co'># Preparing risk differences and covariances for multivariate meta-analysis</span>
 <span class='co'>###########################################################################</span>
@@ -217,25 +227,46 @@
 <span class='va'>r.Gee</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='va'>r12</span>, <span class='va'>r12</span>, <span class='fl'>1</span><span class='op'>)</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
 
 
-<span class='va'>computvocv</span> <span class='op'>&lt;-</span> <span class='fu'>rd.vcov</span><span class='op'>(</span>nt <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>nt_DD</span>, <span class='va'>nt_D</span><span class='op'>)</span><span class='op'>)</span>,
+<span class='va'>computvcov</span> <span class='op'>&lt;-</span> <span class='fu'>rd.vcov</span><span class='op'>(</span>nt <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>nt_DD</span>, <span class='va'>nt_D</span><span class='op'>)</span><span class='op'>)</span>,
                       nc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>nc_DD</span>, <span class='va'>nc_D</span><span class='op'>)</span><span class='op'>)</span>,
                       st <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>st_DD</span>, <span class='va'>st_D</span><span class='op'>)</span><span class='op'>)</span>,
                       sc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>sc_DD</span>, <span class='va'>sc_D</span><span class='op'>)</span><span class='op'>)</span>,
                       r <span class='op'>=</span> <span class='va'>r.Gee</span><span class='op'>)</span>
-<span class='co'># name computed relative risk as an input</span>
-<span class='va'>Input</span> <span class='op'>&lt;-</span> <span class='va'>computvocv</span><span class='op'>$</span><span class='va'>rd</span>
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>Input</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rd.DD"</span>, <span class='st'>"rd.D"</span><span class='op'>)</span>
+<span class='co'># name computed relative risk as y</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>ef</span>
+<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rd.DD"</span>, <span class='st'>"rd.D"</span><span class='op'>)</span>
 <span class='co'># name variance-covariance matrix of trnasformed z scores as covars</span>
-<span class='va'>covars</span> <span class='op'>&lt;-</span> <span class='va'>computvocv</span><span class='op'>$</span><span class='va'>rd.cov</span>
-<span class='co'>###############################################################</span>
-<span class='co'># Running random-effects model using package "mvmeta"</span>
-<span class='co'>################################################################</span>
+<span class='va'>S</span> <span class='op'>&lt;-</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>matrix.vcov</span>
+<span class='co'>## fixed-effect model</span>
+<span class='va'>MMA_FE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'><a href='metafixed.html'>metafixed</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, Slist <span class='op'>=</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>list.vcov</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'>#######################################################################</span>
+<span class='co'># Running random-effects model using package "mvmeta" or "metaSEM"</span>
+<span class='co'>#######################################################################</span>
 <span class='co'>#library(mvmeta)</span>
 <span class='co'>#mvmeta_RE &lt;- summary(mvmeta(cbind(rd.DD, rd.D),</span>
-<span class='co'>#                          S = covars, data = as.data.frame(Input),</span>
+<span class='co'>#                          S = S, data = as.data.frame(y),</span>
 <span class='co'>#                          method = "reml"))</span>
 <span class='co'>#mvmeta_RE</span>
-</pre>
+
+<span class='co'># maximum likelihood estimators from the metaSEM package</span>
+<span class='co'># library(metaSEM)</span>
+<span class='co'># metaSEM_RE &lt;- summary(meta(y = y, v = S))</span>
+<span class='co'># metaSEM_RE</span>
+<span class='co'>##############################################################</span>
+<span class='co'># Plotting the result:</span>
+<span class='co'>##############################################################</span>
+<span class='va'>obj</span> <span class='op'>&lt;-</span> <span class='va'>MMA_FE</span>
+<span class='co'># obj &lt;- mvmeta_RE</span>
+<span class='co'># obj &lt;- metaSEM_RE</span>
+<span class='co'># pdf("CI.pdf", width = 4, height = 7)</span>
+<span class='fu'><a href='plotCI.html'>plotCI</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>ef</span>, v <span class='op'>=</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>list.vcov</span>,
+        name.y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rd.DD"</span>, <span class='st'>"rd.D"</span><span class='op'>)</span>,
+        name.study <span class='op'>=</span> <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>studyID</span>,
+        y.all <span class='op'>=</span> <span class='va'>obj</span><span class='op'>$</span><span class='va'>coefficients</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>,
+        y.all.se <span class='op'>=</span> <span class='va'>obj</span><span class='op'>$</span><span class='va'>coefficients</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $`Plotting rd.DD`</div><div class='img'><img src='rd.vcov-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $`Plotting rd.D`</div><div class='img'><img src='rd.vcov-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'><span class='co'># dev.off()</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

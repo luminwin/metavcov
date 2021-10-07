@@ -40,7 +40,19 @@
     <loc>https://github.com/luminwin/metavcov//reference/md_smd.html</loc>
   </url>
   <url>
+    <loc>https://github.com/luminwin/metavcov//reference/metafixed.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/luminwin/metavcov//reference/metami.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/luminwin/metavcov//reference/metavcov-package.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/luminwin/metavcov//reference/mix.vcov.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/luminwin/metavcov//reference/plotCI.html</loc>
   </url>
   <url>
     <loc>https://github.com/luminwin/metavcov//reference/r.vcov.html</loc>

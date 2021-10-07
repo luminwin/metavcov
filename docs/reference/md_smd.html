@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Covariance between mean difference and standardized mean difference — md_smd • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Computing Covariance between Mean Difference and Standardized Mean Difference — md_smd • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Covariance between mean difference and standardized mean difference — md_smd" />
-<meta property="og:description" content="Compute covariance between mean difference and standardized mean difference, when effect sizes are different." />
+<meta property="og:title" content="Computing Covariance between Mean Difference and Standardized Mean Difference — md_smd" />
+<meta property="og:description" content="The function lgor_rd computes covariance between mean difference and standardized mean difference.  See mix.vcov for effect sizes of the same or different types." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
 
 
@@ -89,7 +89,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -100,6 +100,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -110,10 +111,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -146,16 +156,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Covariance between mean difference and standardized mean difference</h1>
+    <h1>Computing Covariance between Mean Difference and Standardized Mean Difference</h1>
     
     <div class="hidden name"><code>md_smd.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute covariance between mean difference and standardized mean difference, when effect sizes are different.</p>
+    <p>The function <code>lgor_rd</code> computes covariance between mean difference and standardized mean difference.  See <code><a href='mix.vcov.html'>mix.vcov</a></code> for effect sizes of the same or different types.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>md_smd</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>n1c</span>, <span class='va'>n2c</span>, <span class='va'>n1t</span>, <span class='va'>n2t</span>,
+    <pre class="usage"><span class='fu'>md_smd</span><span class='op'>(</span><span class='va'>smd</span>, <span class='va'>r</span>, <span class='va'>n1c</span>, <span class='va'>n2c</span>, <span class='va'>n1t</span>, <span class='va'>n2t</span>,
        n12c <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>n1c</span>, <span class='va'>n2c</span><span class='op'>)</span>, n12t <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>n1t</span>, <span class='va'>n2t</span><span class='op'>)</span>,
        <span class='va'>sd1t</span>, <span class='va'>sd2t</span>, <span class='va'>sd1c</span>, <span class='va'>sd2c</span><span class='op'>)</span></pre>
 
@@ -163,48 +173,52 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>smd </th>
+      <td><p>Standardized mean difference for outcome 2.</p></td>
+    </tr>
+    <tr>
       <th>r </th>
       <td><p>Correlation coefficient of the two outcomes.</p></td>
     </tr>
     <tr>
       <th>n1c </th>
-      <td><p>Number of participants reporting outcome 1 in control group.</p></td>
+      <td><p>Number of participants reporting outcome 1 in the control group.</p></td>
     </tr>
     <tr>
       <th>n2c </th>
-      <td><p>Number of participants reporting outcome 2 in control group.</p></td>
+      <td><p>Number of participants reporting outcome 2 in the control group.</p></td>
     </tr>
     <tr>
       <th>n1t </th>
-      <td><p>Number of participants reporting outcome 1 in treatment group.</p></td>
+      <td><p>Number of participants reporting outcome 1 in the treatment group.</p></td>
     </tr>
     <tr>
       <th>n2t </th>
-      <td><p>Number of participants reporting outcome 2 in treatment group.</p></td>
+      <td><p>Number of participants reporting outcome 2 in the treatment group.</p></td>
     </tr>
     <tr>
       <th>n12c </th>
-      <td><p>Number of participants reporting both outcome 1 and outcome 2 in control group. By default, it is equal to the smaller number between n1c and n2c.</p></td>
+      <td><p>Number of participants reporting both outcome 1 and outcome 2 in the control group. By default, it is equal to the smaller number between <code>n1c</code> and <code>n2c</code>.</p></td>
     </tr>
     <tr>
       <th>n12t </th>
-      <td><p>Number defined in a similar way as n12c for treatment group.</p></td>
+      <td><p>Number defined in a similar way as <code>n12c</code> for treatment group.</p></td>
     </tr>
     <tr>
       <th>sd1t </th>
-      <td><p>Sample standard deviation of outcome 1.</p></td>
+      <td><p>Sample standard deviation of outcome 1 for the treatment group.</p></td>
     </tr>
     <tr>
       <th>sd2t </th>
-      <td><p>Sample standard deviation of outcome 2.</p></td>
+      <td><p>Sample standard deviation of outcome 2 for the treatment group.</p></td>
     </tr>
     <tr>
       <th>sd1c </th>
-      <td><p>Defined in a similar way as sd1t for control group.</p></td>
+      <td><p>Defined in a similar way as <code>sd1t</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>sd2c </th>
-      <td><p>Defined in a similar way as sd2t for control group.</p></td>
+      <td><p>Defined in a similar way as <code>sd2t</code> for the control group.</p></td>
     </tr>
     </table>
 
@@ -213,24 +227,61 @@
     <p>Min Lu</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Return the computed covariance.</p>
+    <p></p><table class='table'>
+<tr><td>g</td><td>Computed Hedge's g from the input argument smd for outcome 2.</td></tr>
+<tr><td>v</td><td>Computed covariance.</td></tr>
+</table>
+
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Ahn, S., Lu, M., Lefevor, G.T., Fedewa, A. &amp; Celimli, S. (2016). Application of meta-analysis in sport and exercise science. In N. Ntoumanis, &amp; N. Myers (Eds.), <em>An Introduction to Intermediate and Advanced Statistical Analyses for Sport and Exercise Scientists</em> (pp.233-253). Hoboken, NJ: John Wiley and Sons, Ltd.</p>
 <p>Wei, Y., &amp;  Higgins, J. (2013). Estimating within study covariances in multivariate meta-analysis with multiple outcomes. <em>Statistics in Medicine, 32</em>(7), 119-1205.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'>## simple example</span>
-<span class='fu'>md_smd</span><span class='op'>(</span>r <span class='op'>=</span> <span class='fl'>0.71</span>, n1c <span class='op'>=</span> <span class='fl'>34</span>, n2c <span class='op'>=</span> <span class='fl'>35</span>, n1t <span class='op'>=</span> <span class='fl'>25</span>, n2t <span class='op'>=</span> <span class='fl'>32</span>,
+    <pre class="examples"><div class='input'><span class='co'>## a simple example</span>
+<span class='fu'>md_smd</span><span class='op'>(</span>smd <span class='op'>=</span> <span class='fl'>1</span>, r <span class='op'>=</span> <span class='fl'>0.71</span>, n1c <span class='op'>=</span> <span class='fl'>34</span>, n2c <span class='op'>=</span> <span class='fl'>35</span>, n1t <span class='op'>=</span> <span class='fl'>25</span>, n2t <span class='op'>=</span> <span class='fl'>32</span>,
        sd1t <span class='op'>=</span> <span class='fl'>0.6</span>, sd2t <span class='op'>=</span> <span class='fl'>0.4</span>, sd1c <span class='op'>=</span> <span class='fl'>8</span>, sd2c <span class='op'>=</span> <span class='fl'>0.9</span><span class='op'>)</span>
-<span class='co'>## calculate covariances for variable SBP and DBP in Geeganage2010 data</span>
+</div><div class='output co'>#&gt; $g
+#&gt; [1] 1.013393
+#&gt; 
+#&gt; $v
+#&gt; [1] 0.02449068
+#&gt; </div><div class='input'><span class='co'>## calculate covariances for variable SBP and DBP in Geeganage2010 data</span>
 <span class='kw'><a href='https://rdrr.io/r/base/attach.html'>attach</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>
-<span class='va'>SBP_DBP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span><span class='op'>{</span><span class='fu'>md_smd</span><span class='op'>(</span>r <span class='op'>=</span> <span class='fl'>0.71</span>,
+</div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 3):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 4):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 5):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 6):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 7):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from Geeganage2010 (pos = 8):</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    MD_DBP, MD_SBP, nc_D, nc_DBP, nc_DD, nc_SBP, nt_D, nt_DBP, nt_DD,</span>
+#&gt; <span class='message'>    nt_SBP, OR_D, OR_DD, sc_D, sc_DD, sdc_DBP, sdc_SBP, sdt_DBP,</span>
+#&gt; <span class='message'>    sdt_SBP, SMD_DBP, SMD_SBP, st_D, st_DD, studyID</span></div><div class='input'><span class='va'>SBP_DBP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span><span class='op'>{</span><span class='fu'>md_smd</span><span class='op'>(</span>smd <span class='op'>=</span> <span class='va'>SMD_DBP</span>, r <span class='op'>=</span> <span class='fl'>0.71</span>,
                 n1c <span class='op'>=</span> <span class='va'>nc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, n2c <span class='op'>=</span> <span class='va'>nc_DBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, n1t <span class='op'>=</span> <span class='va'>nt_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, n2t <span class='op'>=</span> <span class='va'>nt_DBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>,
                 sd1t <span class='op'>=</span> <span class='va'>sdt_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, sd2t <span class='op'>=</span> <span class='va'>sdt_DBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>,
-                sd1c <span class='op'>=</span> <span class='va'>sdc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, sd2c <span class='op'>=</span> <span class='va'>sdc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span><span class='op'>)</span>
+                sd1c <span class='op'>=</span> <span class='va'>sdc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, sd2c <span class='op'>=</span> <span class='va'>sdc_SBP</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span><span class='op'>$</span><span class='va'>v</span><span class='op'>}</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>SBP_DBP</span>
-</pre>
+</div><div class='output co'>#&gt;  [1] 1.98519067 2.34042056 0.41950881 0.42324831 0.25336382 3.88526087
+#&gt;  [7] 0.35189020 0.17785957 0.45956107 0.40763084 0.13144089 1.12143821
+#&gt; [13] 1.08637853 1.71396400 0.08663262 0.71054577 1.74388868</div><div class='input'><span class='co'>## the function mix.vcov() should be used for dataset</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

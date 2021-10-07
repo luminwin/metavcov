@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Covariance matrix for mixed effect sizes — mix.vcov • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Computing Variance-Covariance Matrices for Effect Sizes of the Same or Different Types — mix.vcov • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Covariance matrix for mixed effect sizes — mix.vcov" />
-<meta property="og:description" content="Compute variance-covariance matrices between different effect sizes. Effect sizes include mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD). Formulas are in Table I of Wei et al.'s paper." />
+<meta property="og:title" content="Computing Variance-Covariance Matrices for Effect Sizes of the Same or Different Types — mix.vcov" />
+<meta property="og:description" content="The function r.vcov computes effect sizes and variance-covariance matrices between effect sizes of the same of different types. Effect sizes include mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD). Formulas are in Table I of Wei et al.'s paper (2013)." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
 
 
@@ -89,7 +89,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -100,6 +100,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -110,10 +111,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -146,63 +156,71 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Covariance matrix for mixed effect sizes</h1>
+    <h1>Computing Variance-Covariance Matrices for Effect Sizes of the Same or Different Types</h1>
     
     <div class="hidden name"><code>mix.vcov.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute variance-covariance matrices between different effect sizes. Effect sizes include mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD). Formulas are in Table I of Wei et al.'s paper.</p>
+    <p>The function <code>r.vcov</code> computes effect sizes and variance-covariance matrices between effect sizes of the same of different types. Effect sizes include mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD). Formulas are in Table I of Wei et al.'s paper (2013).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mix.vcov</span><span class='op'>(</span><span class='va'>d</span>, <span class='va'>r</span>, <span class='va'>nt</span>, <span class='va'>nc</span>, <span class='va'>st</span>, <span class='va'>sc</span>, n_rt <span class='op'>=</span> <span class='fl'>0</span>, n_rc <span class='op'>=</span> <span class='fl'>0</span>, <span class='va'>sdt</span>, <span class='va'>sdc</span>, <span class='va'>type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>mix.vcov</span><span class='op'>(</span><span class='va'>d</span>, <span class='va'>r</span>, <span class='va'>nt</span>, <span class='va'>nc</span>, <span class='va'>st</span>, <span class='va'>sc</span>, n_rt <span class='op'>=</span> <span class='cn'>NA</span>, n_rc <span class='op'>=</span> <span class='cn'>NA</span>, <span class='va'>sdt</span>, <span class='va'>sdc</span>, <span class='va'>type</span>, name <span class='op'>=</span> <span class='cn'>NULL</span>, na.impute <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>d </th>
-      <td><p>A matrix with standard mean differences from each of the outcome. d[i,j] is the value from study i for outcome j. If outcome j is not mean difference, NA has to be imputed in column j.</p></td>
+      <td><p>A \(N \times p\) matrix or data frame with mean differences (MD) and/or standard mean differences (SMD) from the \(N\) studies. <code>d[i,j]</code> is the value from study \(i\) for outcome \(j\). If outcome \(j\) is not MD or SMD, NA has to be imputed in column \(j\).</p></td>
     </tr>
     <tr>
       <th>r </th>
-      <td><p>A list of correlation coefficient matrices of the outcomes from the studies. r[[k]][i,j] is the correlation coefficient between outcome i and outcome j from study k.</p></td>
+      <td><p>A \(N\)-dimensional list of \(p \times p\) correlation matrices for the \(p\) outcomes from the \(N\) studies. <code>r[[k]][i,j]</code> is the correlation coefficient between outcome \(i\) and outcome \(j\) from study \(k\).</p></td>
     </tr>
     <tr>
       <th>nt </th>
-      <td><p>A matrix with sample sizes in the treatment group reporting each of the outcome. nt[i,j] is the sample size from study i reporting outcome j.</p></td>
+      <td><p>A \(N \times p\) matrix storing sample sizes in the treatment group reporting the  \(p\) outcomes. <code>nt[i,j]</code> is the sample size from study \(i\) reporting outcome \(j\).</p></td>
     </tr>
     <tr>
       <th>nc </th>
-      <td><p>Defined in a similar way as nt for control group.</p></td>
+      <td><p>A matrix defined in a similar way as <code>nt</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>st </th>
-      <td><p>Number of participants with event for all outcomes (dichotomous) in treatment group. st[i,j] reports number of participants with event for outcome j in treatment group. If outcome j is not dichotomous, NA has to be imputed in column j.</p></td>
+      <td><p>A \(N \times p\) matrix recording number of participants with event for all outcomes (dichotomous) in treatment group. <code>st[i,j]</code> reports number of participants with event for outcome \(j\) in treatment group for study \(i\). If outcome \(j\) is not dichotomous, NA has to be imputed in column \(j\).</p></td>
     </tr>
     <tr>
       <th>sc </th>
-      <td><p>Defined in a similar way as st for control group.</p></td>
+      <td><p>Defined in a similar way as <code>st</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>n_rt </th>
-      <td><p>A list of matrices storing sample sizes in the treatment group reporting pairwised outcomes in the off diagonal elements. n_rt[[k]][i,j] is the sample size reporting both outcome i and outcome j from study k. Diagonal elements of these matrices are not used. The default value is zero, which means the smaller sample size reporting the corresponding two outcomes: i.e. n_rt[[k]][i,j]=min(nt[k,i],nt[k,j]).</p></td>
+      <td><p>A \(N\)-dimensional list of \(p \times p\) matrices storing sample sizes in the treatment group reporting pairwise outcomes in the off-diagonal elements. <code>n_rt[[k]][i,j]</code> is the sample size reporting both outcome \(i\) and outcome \(j\) from study \(k\). Diagonal elements of these matrices are discarded. The default value is <code>NA</code>, which means that the smaller sample size reporting the corresponding two outcomes is imputed: i.e. <code>n_rt[[k]][i,j]=min(nt[k,i],nt[k,j])</code>.</p></td>
     </tr>
     <tr>
       <th>n_rc </th>
-      <td><p>Defined in a similar way as n_rt for control group.</p></td>
+      <td><p>A list defined in a similar way as <code>n_rt</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>sdt </th>
-      <td><p>Sample standard deviation from each of the outcome. sdt[i,j] is the sample standard deviation from study i for outcome j. If outcome j is not mean difference, NA has to be imputed in the jth column.</p></td>
+      <td><p>A \(N \times p\) matrix storing sample standard deviations for each outcome from treatment group. <code>sdt[i,j]</code> is the sample standard deviation from study \(i\) for outcome \(j\). If outcome \(j\) is not continuous such as MD or SMD, NA has to be imputed in the \(j\)th column.</p></td>
     </tr>
     <tr>
       <th>sdc </th>
-      <td><p>Defined in a similar way as sdt for control group.</p></td>
+      <td><p>A matrix defined in a similar way as <code>sdt</code> for the control group.</p></td>
     </tr>
     <tr>
       <th>type </th>
-      <td><p>A vector indicating types of effect sizes. "MD" stands for mean difference, "SMD" stands for standardized mean difference,"logOR" stands for log odds ratio, "logRR" stands for log risk ratio, and "RD" stands for risk difference.</p></td>
+      <td><p>A \(p\)-dimensional vector indicating types of effect sizes. <code>"MD"</code> stands for mean difference, <code>"SMD"</code> stands for standardized mean difference, <code>"logOR"</code> stands for log odds ratio, <code>"logRR"</code> stands for log risk ratio, and <code>"RD"</code> stands for risk difference.</p></td>
+    </tr>
+    <tr>
+      <th>name </th>
+      <td><p>A \(p\)-dimensional vector storing names for the effect sizes.</p></td>
+    </tr>
+    <tr>
+      <th>na.impute </th>
+      <td><p>Missing values in <code>d</code> can be imputed by a numeric value, such as zero by setting <code>na.impute = 0</code>. With the default setting <code>na.impute = NA</code>, missing values are not imputed. If specifying <code>na.impute = "average"</code>, missing values are imputed by the mean of <code>d</code> that is sample-size weighted from the complete records.</p></td>
     </tr>
     </table>
 
@@ -211,20 +229,20 @@
     <p>Min Lu</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p></p><table class='table'>
-<tr><td>list.mix.cov</td><td>A list of computed variance-covariance matrices.</td></tr>
-<tr><td>mix.cov</td><td>A matrix whose rows are computed variance-covariance vectors.</td></tr>
-</table>
+    
 
+<dt> ef</dt><dd><p>A \(N \times p\) data frame whose columns are computed effect sizes according to the input argument <code>"type"</code>. SMD will be converted to Hedges's g (Wei and Higgins, 2013).</p></dd>
+<dt>list.vcov </dt><dd><p>A \(N\)-dimensional list of \(p(p+1)/2 \times p(p+1)/2\) matrices of computed variance-covariance matrices.</p></dd>
+<dt>matrix.vcov </dt><dd><p>A \(N \times p(p+1)/2\) matrix whose rows are computed variance-covariance vectors.</p></dd>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Wei, Y., &amp;  Higgins, J. (2013). Estimating within study covariances in multivariate meta-analysis with multiple outcomes. <em>Statistics in Medicine, 32</em>(7), 119-1205.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'>#########################################################################</span>
+    <pre class="examples"><div class='input'><span class='co'>#########################################################################</span>
 <span class='co'># Example: Geeganage2010 data</span>
-<span class='co'># Preparing covariances for multivariate meta analysis</span>
+<span class='co'># Preparing covariances for a multivariate meta-analysis</span>
 <span class='co'># Choose variable SBP, DBP, DD, D with effect sizes "MD","MD","RD","lgOR"</span>
 <span class='co'>#########################################################################</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>
@@ -235,34 +253,137 @@
 <span class='va'>r23</span> <span class='op'>&lt;-</span> <span class='fl'>0.6</span>
 <span class='va'>r24</span> <span class='op'>&lt;-</span> <span class='fl'>0.16</span>
 <span class='va'>r34</span> <span class='op'>&lt;-</span> <span class='fl'>0.16</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'>vec2sm</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>r12</span>, <span class='va'>r13</span>, <span class='va'>r14</span>, <span class='va'>r23</span>, <span class='va'>r24</span>, <span class='va'>r34</span><span class='op'>)</span>, diag <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'>vecTosm</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>r12</span>, <span class='va'>r13</span>, <span class='va'>r14</span>, <span class='va'>r23</span>, <span class='va'>r24</span>, <span class='va'>r34</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
 <span class='va'>mix.r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span><span class='op'>{</span><span class='va'>r</span><span class='op'>}</span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/attach.html'>attach</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>
 <span class='co'>## compute variance co-variances</span>
-<span class='va'>computvocv</span> <span class='op'>&lt;-</span> <span class='fu'>mix.vcov</span><span class='op'>(</span>type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MD"</span>, <span class='st'>"MD"</span>, <span class='st'>"RD"</span>, <span class='st'>"lgOR"</span><span class='op'>)</span>,
-                     d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>MD_SBP</span>, <span class='va'>MD_DBP</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
-                     sdt <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>sdt_SBP</span>, <span class='va'>sdt_DBP</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
-                     sdc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>sdc_SBP</span>, <span class='va'>sdc_DBP</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
-                     nt <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>nt_SBP</span>, <span class='va'>nt_DBP</span>, <span class='va'>nt_DD</span>, <span class='va'>nt_D</span><span class='op'>)</span>,
-                     nc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>nc_SBP</span>, <span class='va'>nc_DBP</span>, <span class='va'>nc_DD</span>, <span class='va'>nc_D</span><span class='op'>)</span>,
-                     st <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='va'>st_DD</span>, <span class='va'>st_D</span><span class='op'>)</span>,
-                     sc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='va'>sc_DD</span>, <span class='va'>sc_D</span><span class='op'>)</span>,
-                     r <span class='op'>=</span> <span class='va'>mix.r</span><span class='op'>)</span>
-<span class='co'># name different effect sizes as an input</span>
-<span class='va'>Input</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>MD_SBP</span>, <span class='va'>MD_DBP</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>Input</span><span class='op'>$</span><span class='va'>RD_DD</span> <span class='op'>&lt;-</span> <span class='va'>st_DD</span><span class='op'>/</span><span class='va'>nt_DD</span> <span class='op'>-</span> <span class='va'>sc_DD</span><span class='op'>/</span><span class='va'>nc_DD</span>
-<span class='va'>Input</span><span class='op'>$</span><span class='va'>lgOR_D</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>st_D</span><span class='op'>/</span><span class='op'>(</span><span class='va'>nt_D</span> <span class='op'>-</span> <span class='va'>st_D</span><span class='op'>)</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='va'>sc_D</span><span class='op'>/</span><span class='op'>(</span><span class='va'>nc_D</span> <span class='op'>-</span> <span class='va'>sc_D</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'># name variance-covariance matrix as covars</span>
-<span class='va'>covars</span> <span class='op'>&lt;-</span> <span class='va'>computvocv</span><span class='op'>$</span><span class='va'>mix.cov</span>
-<span class='co'>###############################################</span>
-<span class='co'># Running random-effects model using package "mvmeta"</span>
-<span class='co'>###############################################</span>
-<span class='co'>#library(mvmeta)</span>
-<span class='co'>#mvmeta_RE &lt;- summary(mvmeta(cbind(MD_SBP, MD_DBP, RD_DD, lgOR_D),</span>
-<span class='co'>#                           S = covars, data = Input, method = "reml"))</span>
-<span class='co'>#mvmeta_RE</span>
-</pre>
+<span class='va'>computvcov</span> <span class='op'>&lt;-</span> <span class='fu'>mix.vcov</span><span class='op'>(</span>type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MD"</span>, <span class='st'>"MD"</span>, <span class='st'>"RD"</span>, <span class='st'>"lgOR"</span><span class='op'>)</span>,
+                       d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>MD_SBP</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>MD_DBP</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
+                       sdt <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>sdt_SBP</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>sdt_DBP</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
+                       sdc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>sdc_SBP</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>sdc_DBP</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>,
+                       nt <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>nt_SBP</span>, <span class='va'>nt_DBP</span>, <span class='va'>nt_DD</span>, <span class='va'>nt_D</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,
+                       nc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span>, select <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>nc_SBP</span>, <span class='va'>nc_DBP</span>, <span class='va'>nc_DD</span>, <span class='va'>nc_D</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,
+                       st <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>st_DD</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>st_D</span><span class='op'>)</span>,
+                       sc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>sc_DD</span>, <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>sc_D</span><span class='op'>)</span>,
+                       r <span class='op'>=</span> <span class='va'>mix.r</span>,
+                       name <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MD.SBP"</span>, <span class='st'>"MD.DBP"</span>, <span class='st'>"RD.DD"</span>, <span class='st'>"lgOR.D"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'># save different effect sizes in y</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>ef</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   MD.SBP MD.DBP       RD.DD     lgOR.D
+#&gt; 1  -2.47  -3.44  0.00000000 -1.0986123
+#&gt; 2   1.61  -0.34  0.18750000  0.5959834
+#&gt; 3  -8.16  -6.44  0.02554455  0.5892102
+#&gt; 4  -3.17  -3.41  0.04000000  0.4444945
+#&gt; 5  -0.15  -2.39  0.01920750  0.1000835
+#&gt; 6  -9.83   1.93 -0.25000000 -0.5108256</div><div class='input'><span class='co'># save variances and covariances of all the effect sizes in a matrix S</span>
+<span class='va'>S</span> <span class='op'>&lt;-</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>matrix.vcov</span>
+<span class='va'>S</span><span class='op'>[</span><span class='fl'>1</span>, <span class='op'>]</span>
+</div><div class='output co'>#&gt;   var_MD.SBP cov_MD.SBP_MD.DBP cov_MD.SBP_RD.DD cov_MD.SBP_lgOR.D var_MD.DBP
+#&gt; 1   87.98831          34.81409        0.9245278          2.278204   27.85141
+#&gt;   cov_MD.DBP_RD.DD cov_MD.DBP_lgOR.D var_RD.DD cov_RD.DD_lgOR.D var_lgOR.D
+#&gt; 1           0.6207         0.7907191  0.040625       0.02741618   1.020833</div><div class='input'><span class='co'>## fixed-effect model</span>
+<span class='va'>MMA_FE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'><a href='metafixed.html'>metafixed</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, Slist <span class='op'>=</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>list.vcov</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'>#######################################################################</span>
+<span class='co'># Running random-effects model using package "mvmeta" or "metaSEM"</span>
+<span class='co'>#######################################################################</span>
+<span class='co'># Restricted maximum likelihood (REML) estimator from the mvmeta package</span>
+ <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.ag-myresearch.com/package-mvmeta'>mvmeta</a></span><span class='op'>)</span>
+ <span class='va'>mvmeta_RE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/mvmeta/man/mvmeta.html'>mvmeta</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>MD.SBP</span>, <span class='va'>MD.DBP</span>, <span class='va'>RD.DD</span>, <span class='va'>lgOR.D</span><span class='op'>)</span> <span class='op'>~</span><span class='va'>.</span>,
+                            S <span class='op'>=</span> <span class='va'>S</span>, data <span class='op'>=</span> <span class='va'>y</span>, method <span class='op'>=</span> <span class='st'>"reml"</span><span class='op'>)</span><span class='op'>)</span>
+ <span class='va'>mvmeta_RE</span>
+</div><div class='output co'>#&gt; Call:  mvmeta(formula = cbind(MD.SBP, MD.DBP, RD.DD, lgOR.D) ~ ., S = S, 
+#&gt;     data = y, method = "reml")
+#&gt; 
+#&gt; Multivariate random-effects meta-analysis
+#&gt; Dimension: 4
+#&gt; Estimation method: REML
+#&gt; 
+#&gt; Fixed-effects coefficients
+#&gt;         Estimate  Std. Error        z  Pr(&gt;|z|)  95%ci.lb  95%ci.ub   
+#&gt; MD.SBP   -2.2985      1.6172  -1.4212    0.1552   -5.4682    0.8712   
+#&gt; MD.DBP   -2.5155      1.1940  -2.1067    0.0351   -4.8558   -0.1752  *
+#&gt; RD.DD     0.0135      0.0195   0.6928    0.4885   -0.0247    0.0517   
+#&gt; lgOR.D    0.0836      0.1004   0.8327    0.4050   -0.1132    0.2804   
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+#&gt; 
+#&gt; Between-study random-effects (co)variance components
+#&gt; Structure: General positive-definite
+#&gt;         Std. Dev    Corr                
+#&gt; MD.SBP    4.6739  MD.SBP  MD.DBP   RD.DD
+#&gt; MD.DBP    3.9292  0.9776                
+#&gt; RD.DD     0.0218  0.3666  0.1627        
+#&gt; lgOR.D    0.0454  0.7369  0.5782  0.8991
+#&gt; 
+#&gt; Multivariate Cochran Q-test for heterogeneity:
+#&gt; Q = 137.4078 (df = 64), p-value = 0.0000
+#&gt; I-square statistic = 53.4%
+#&gt; 
+#&gt; 17 studies, 68 observations, 4 fixed and 10 random-effects parameters
+#&gt;   logLik       AIC       BIC  
+#&gt; -92.2480  212.4959  242.7203  
+#&gt; </div><div class='input'>
+<span class='co'># maximum likelihood estimators from the metaSEM package</span>
+ <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/mikewlcheung/metasem'>metaSEM</a></span><span class='op'>)</span>
+ <span class='va'>metaSEM_RE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/metaSEM/man/meta.html'>meta</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, v <span class='op'>=</span> <span class='va'>S</span><span class='op'>)</span><span class='op'>)</span>
+ <span class='va'>metaSEM_RE</span>
+</div><div class='output co'>#&gt; 
+#&gt; Call:
+#&gt; meta(y = y, v = S)
+#&gt; 
+#&gt; 95% confidence intervals: z statistic approximation (robust=FALSE)
+#&gt; Coefficients:
+#&gt;               Estimate   Std.Error      lbound      ubound z value Pr(&gt;|z|)
+#&gt; Intercept1 -1.2594e+00  1.1408e+01 -2.3619e+01  2.1100e+01 -0.1104   0.9121
+#&gt; Intercept2 -1.6238e+00  1.5133e+01 -3.1283e+01  2.8036e+01 -0.1073   0.9145
+#&gt; Intercept3  1.3275e-02  5.8909e+02 -1.1546e+03  1.1546e+03  0.0000   1.0000
+#&gt; Intercept4  5.9969e-02  1.2581e+02 -2.4653e+02  2.4665e+02  0.0005   0.9996
+#&gt; Tau2_1_1    6.0518e-01  1.0287e+02 -2.0102e+02  2.0223e+02  0.0059   0.9953
+#&gt; Tau2_2_1    1.3066e+00  2.5264e+02 -4.9385e+02  4.9647e+02  0.0052   0.9959
+#&gt; Tau2_2_2    1.2662e+00  1.5463e+02 -3.0181e+02  3.0434e+02  0.0082   0.9935
+#&gt; Tau2_3_1   -6.0376e-03  1.1486e+04 -2.2513e+04  2.2513e+04  0.0000   1.0000
+#&gt; Tau2_3_2   -1.9688e-02  1.4137e+04 -2.7709e+04  2.7709e+04  0.0000   1.0000
+#&gt; Tau2_3_3    1.5113e-03          NA          NA          NA      NA       NA
+#&gt; Tau2_4_1   -4.5208e-02  2.4796e+03 -4.8599e+03  4.8599e+03  0.0000   1.0000
+#&gt; Tau2_4_2    6.2169e-03  3.0646e+03 -6.0065e+03  6.0065e+03  0.0000   1.0000
+#&gt; Tau2_4_3    1.0743e-02          NA          NA          NA      NA       NA
+#&gt; Tau2_4_4    2.2724e-03  1.4893e+04 -2.9189e+04  2.9189e+04  0.0000   1.0000
+#&gt; 
+#&gt; Q statistic on the homogeneity of effect sizes: 137.4078
+#&gt; Degrees of freedom of the Q statistic: 64
+#&gt; P value of the Q statistic: 2.790395e-07
+#&gt; 
+#&gt; Heterogeneity indices (based on the estimated Tau2):
+#&gt;                              Estimate
+#&gt; Intercept1: I2 (Q statistic)   0.0340
+#&gt; Intercept2: I2 (Q statistic)   0.2017
+#&gt; Intercept3: I2 (Q statistic)   0.1992
+#&gt; Intercept4: I2 (Q statistic)   0.0127
+#&gt; 
+#&gt; Number of studies (or clusters): 17
+#&gt; Number of observed statistics: 68
+#&gt; Number of estimated parameters: 14
+#&gt; Degrees of freedom: 54
+#&gt; -2 log likelihood: 194.1707 
+#&gt; OpenMx status1: 5 ("0" or "1": The optimization is considered fine.
+#&gt; Other values may indicate problems.)</div><div class='output co'>#&gt; <span class='warning'>Warning: OpenMx status1 is neither 0 or 1. You are advised to 'rerun' it again.</span></div><div class='input'><span class='co'>##############################################################</span>
+<span class='co'># Plotting the result:</span>
+<span class='co'>##############################################################</span>
+<span class='va'>obj</span> <span class='op'>&lt;-</span> <span class='va'>MMA_FE</span>
+<span class='co'># obj &lt;- mvmeta_RE</span>
+<span class='co'># obj &lt;- metaSEM_RE</span>
+<span class='co'># pdf("CI.pdf", width = 4, height = 7)</span>
+<span class='fu'><a href='plotCI.html'>plotCI</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>ef</span>, v <span class='op'>=</span> <span class='va'>computvcov</span><span class='op'>$</span><span class='va'>list.vcov</span>,
+        name.y <span class='op'>=</span> <span class='cn'>NULL</span>, name.study <span class='op'>=</span> <span class='va'>Geeganage2010</span><span class='op'>$</span><span class='va'>studyID</span>,
+        y.all <span class='op'>=</span> <span class='va'>obj</span><span class='op'>$</span><span class='va'>coefficients</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>,
+        y.all.se <span class='op'>=</span> <span class='va'>obj</span><span class='op'>$</span><span class='va'>coefficients</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span>,
+        hline <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $`Plotting MD.SBP`</div><div class='img'><img src='mix.vcov-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $`Plotting MD.DBP`</div><div class='img'><img src='mix.vcov-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $`Plotting RD.DD`</div><div class='img'><img src='mix.vcov-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $`Plotting lgOR.D`</div><div class='img'><img src='mix.vcov-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'><span class='co'># dev.off()</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

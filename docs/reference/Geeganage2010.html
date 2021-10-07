@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>17 studies of multivariate effect sizes reported by Geeganage et al. (2010) — Geeganage2010 • Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</title>
+<title>Multivariate Effect Sizes of Different Types from the Geeganage et al. Meta-Analysis — Geeganage2010 • Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="17 studies of multivariate effect sizes reported by Geeganage et al. (2010) — Geeganage2010" />
+<meta property="og:title" content="Multivariate Effect Sizes of Different Types from the Geeganage et al. Meta-Analysis — Geeganage2010" />
 <meta property="og:description" content="This dataset includes 17 studies of multivariate effect sizes with four different outcomes reported by Geeganage and Bath (2010)." />
 <meta property="og:image" content="https://github.com/luminwin/metavcov/logo.svg" />
 
@@ -89,7 +89,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">Variance-Covariance Matrix for Multivariate Meta-Analysis with metavcov</a>
+        <a class="navbar-link" href="../index.html">Computing Variances and Covariances, Visualization and Missing Data Solution for Multivariate Meta-Analysis with metavcov</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Development version">2.1</span>
       </span>
     </div>
@@ -100,6 +100,7 @@
   <a href="../articles/intro.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
+    Introduction
   </a>
 </li>
 <li class="dropdown">
@@ -110,10 +111,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/intro.html">Introduction</a>
+      <a href="../reference/metavcov-package.html">Overview</a>
     </li>
     <li>
-      <a href="../articles/intro.html#correlation-1">Correlation</a>
+      <a href="../reference/r.vcov.html">Correlation Coefficients with r.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/mix.vcov.html">All Other Effect Sizes with mix.vcov</a>
+    </li>
+    <li>
+      <a href="../reference/plotCI.html">Data Visualization with plotCI</a>
+    </li>
+    <li>
+      <a href="../reference/metami.html">Multiple Imputation for Missing Data with metami</a>
     </li>
   </ul>
 </li>
@@ -146,7 +156,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>17 studies of multivariate effect sizes reported by Geeganage et al. (2010)</h1>
+    <h1>Multivariate Effect Sizes of Different Types from the Geeganage et al. Meta-Analysis</h1>
     
     <div class="hidden name"><code>Geeganage2010.Rd</code></div>
     </div>
@@ -164,37 +174,37 @@
 <table class='table'>
 <tr><td>ID:</td><td>ID for each study included</td></tr>
 <tr><td>ft_D</td><td>Number of early death within 1 month (D) in "1 Drug" Group</td></tr>
-<tr><td>fc_D</td><td>Number of D in "control " Group</td></tr>
+<tr><td>fc_D</td><td>Number of D in "control" Group</td></tr>
 <tr><td>nt_D</td><td>Number of people in "1 Drug" Group reporting D status</td></tr>
-<tr><td>nc_D</td><td>Number of people in "control " Group reporting D status</td></tr>
-<tr><td>OR_D</td><td>Odds Ratio of D for "1 Drug" versus "control" group</td></tr>
+<tr><td>nc_D</td><td>Number of people in "control" Group reporting D status</td></tr>
+<tr><td>OR_D</td><td>Odds ratio of D for "1 Drug" versus "control" group</td></tr>
 <tr><td>ft_DD</td><td>Number of early death or deterioration within 1 month (DD) in "1 Drug" Group</td></tr>
-<tr><td>fc_DD</td><td>Number of early DD in "control " Group</td></tr>
+<tr><td>fc_DD</td><td>Number of early DD in "control" Group</td></tr>
 <tr><td>nt_DD</td><td>Number of people in "1 Drug" Group reporting DD status</td></tr>
-<tr><td>nc_DD</td><td>Number of people in "control " Group reporting DD status</td></tr>
-<tr><td>OR_DD</td><td>Odds Ratio of DD for "1 Drug" versus "control" group</td></tr>
+<tr><td>nc_DD</td><td>Number of people in "control" Group reporting DD status</td></tr>
+<tr><td>OR_DD</td><td>Odds ratio of DD for "1 Drug" versus "control" group</td></tr>
 <tr><td>nt_SBP</td><td>Number of people in "1 Drug" Group reporting Systolic blood pressure (SBP) status</td></tr>
-<tr><td>nc_SBP</td><td>Number of people in "control " Group reporting SBP status</td></tr>
-<tr><td>MD_SBP</td><td>Mean Difference of SBP for "1 Drug" versus "control" group</td></tr>
-<tr><td>sdt_SBP</td><td>Standard Deviation of SBP in "1 Drug" Group</td></tr>
-<tr><td>sdc_SBP</td><td>Standard Deviation of SBP in "control " Group</td></tr>
+<tr><td>nc_SBP</td><td>Number of people in "control" Group reporting SBP status</td></tr>
+<tr><td>MD_SBP</td><td>Mean difference of SBP for "1 Drug" versus "control" group</td></tr>
+<tr><td>sdt_SBP</td><td>Standard deviation of SBP in "1 Drug" Group</td></tr>
+<tr><td>sdc_SBP</td><td>Standard deviation of SBP in "control" Group</td></tr>
 <tr><td>nt_DBP</td><td>Number of people in "1 Drug" Group reporting Diastolic blood pressure (DBP) status</td></tr>
-<tr><td>nc_DBP</td><td>Number of people in "control " Group reporting DBP status</td></tr>
-<tr><td>MD_DBP</td><td>Mean Difference of DBP for "1 Drug" versus "control" group</td></tr>
-<tr><td>sdt_DBP</td><td>Standard Deviation of DBP in "1 Drug" Group</td></tr>
-<tr><td>sdc_DBP</td><td>Standard Deviation of DBP in "control " Group</td></tr>
-<tr><td>SMD_SBP</td><td>Standardized Mean Difference of SBP for "1 Drug" versus "control" group</td></tr>
-<tr><td>SMD_DBP</td><td>Standardized Mean Difference of DBP for "1 Drug" versus "control" group</td></tr>
+<tr><td>nc_DBP</td><td>Number of people in "control" Group reporting DBP status</td></tr>
+<tr><td>MD_DBP</td><td>Mean difference of DBP for "1 Drug" versus "control" group</td></tr>
+<tr><td>sdt_DBP</td><td>Standard deviation of DBP in "1 Drug" Group</td></tr>
+<tr><td>sdc_DBP</td><td>Standard deviation of DBP in "control" Group</td></tr>
+<tr><td>SMD_SBP</td><td>Standardized mean difference of SBP for "1 Drug" versus "control" group</td></tr>
+<tr><td>SMD_DBP</td><td>Standardized mean difference of DBP for "1 Drug" versus "control" group</td></tr>
 </table>
 
 
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>Geeganage, C., &amp; Bath, P. M. (2010). Vasoactive drugs for acute stroke. <em>The Cochrane Library</em>.</p>
+    <p>Geeganage, C., &amp; Bath, P. M. (2010). Vasoactive drugs for acute stroke. <em>Cochrane Database of Systematic Reviews</em> 2010(7).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>
-</pre>
+    <pre class="examples"><div class='input'>  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Geeganage2010</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
