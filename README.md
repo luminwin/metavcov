@@ -9,7 +9,7 @@
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/metavcov)](https://cran.r-project.org/web/packages/metavcov/index.html)
 <!-- badges: end -->
 
-Collection of functions to compute covariances for different effect sizes, data visualization, and single and multiple imputation for missing data. Effect sizes include correlation (r), mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD).
+Collection of functions to compute covariances for different effect sizes, data visualization, and single and multiple imputations for missing data. Effect sizes include correlation (r), mean difference (MD), standardized mean difference (SMD), log odds ratio (logOR), log risk ratio (logRR), and risk difference (RD).
 
 2017-03-29: release version 1.1
 
