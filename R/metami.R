@@ -13,28 +13,32 @@ metami <- function(data, M = 20, vcov = "r.vcov",
                     n_rt = NA,
                     n_rc = NA,
                     r = NULL,
-                    func = "mvmeta",
+                    func = "mixmeta",
                     formula = NULL,
                     method = "fixed",
                     pool.seq = NULL,
                     return.mi = FALSE,
                     ci.level = 0.95){
-# if (!exists(func)) {stop(paste("Please load the package for the function", func))}
 pool <- c("coefficients")
 dat <- data; rm(data)
 p <- ncol(dat)
 N <- nrow(dat)
 
+if("mice" %in% rownames(installed.packages()) == FALSE) {install.packages("mice")}
 predMatrix <- mice::make.predictorMatrix(dat)
 
-cmplt <- colnames(dat)[unlist(lapply(1:p, function(i){length(which(is.na(dat[,i]) == TRUE)) == 0}))]
+cmplt <- colnames(dat)[unlist(lapply(1:p, function(i){
+  length(which(is.na(dat[,i]) == TRUE)) == 0}))]
 
 if (length(cmplt) == p) stop('There is no missing values in your data')
 predMatrix[cmplt, ] <- 0  # don't impute these variables since they have no NAs
 
-imp <- mice::mice(dat, print = FALSE, m = M, predictorMatrix = predMatrix, method = mice::make.method(dat))
+imp <- mice::mice(dat, print = FALSE, m = M,
+                  predictorMatrix = predMatrix,
+                  method = mice::make.method(dat))
 
-mis <- lapply(1:M, function(i){ unlist(lapply(1:p, function(j){imp$imp[[j]][, i]}) )})
+mis <- lapply(1:M, function(i){
+  unlist(lapply(1:p, function(j){imp$imp[[j]][, i]}) )})
 
 if (return.mi) dat.mi <- list() else dat.mi <- NULL
 pp <- 2 # length(pool)
@@ -46,9 +50,10 @@ dat.imp[is.na(dat.imp)] <- mis[[i]]
 vcov <- c("r.vcov", "mix.vcov")[match(vcov, c("r.vcov", "mix.vcov"))]
 if (vcov == "r.vcov"){
 obj <- r.vcov(n = dat.imp[, r.n.name],
-                     corflat = subset(dat.imp, select = ef.name),
-                     zscore = TRUE,
-                     method = rvcov.method, name = ef.name) } else if (vcov == "mix.vcov"){
+              corflat = subset(dat.imp, select = ef.name),
+              zscore = TRUE,
+              method = rvcov.method,
+              name = ef.name) } else if (vcov == "mix.vcov"){
                        if (!is.na(n_rt)) {n_rt <- dat.imp[, n_rt]}
                        if (!is.na(n_rc)) {n_rc <- dat.imp[, n_rc]}
                        eval.d <- as.data.frame(matrix(NA, N, length(d)))
@@ -87,7 +92,8 @@ obj <- r.vcov(n = dat.imp[, r.n.name],
                                         name = ef.name)
                      }
 if (rvcov.zscore == FALSE) {
-  if (vcov == "mix.vcov") {stop("rvcov.zscore == FALSE only makes sense if argument vcov is r.vcov")}
+  if (vcov == "mix.vcov") {
+    stop("rvcov.zscore == FALSE only makes sense if argument vcov is r.vcov")}
   y.name <- "r"
    if (func == "metafixed") {y.v.name <- "list.rvcov"} else {
    y.v.name <- "rvcov"}} else {
@@ -106,20 +112,38 @@ if("mvmeta" %in% rownames(installed.packages()) == FALSE) {install.packages("mvm
   if (is.null(formula)) {
   stop("Formula must be specified for mvmeta") } else {
     if (is.null(x.name)) {
-      o <- mvmeta::mvmeta(formula = formula, S = ef.v, data = ef, method = method) } else {
-        xdat <- subset(dat.imp, select = x.name)
+      o <- mvmeta::mvmeta(formula = formula, S = ef.v,
+                          data = ef, method = method) } else {
+      xdat <- subset(dat.imp, select = x.name)
       o <- mvmeta::mvmeta(formula = formula, S = ef.v, method = method,
                   data = data.frame(ef, xdat))
       }
 
   } }
-if (func == "metafixed") { o <- metafixed(y = ef, Slist = ef.v); pool <- c("coefficients", "qstat")}
+if (func == "mixmeta") {
+  pool <- c("coefficients", "qstat")
+  if("mixmeta" %in% rownames(installed.packages()) == FALSE) {install.packages("mixmeta")}
+  if (is.null(formula)) {
+    stop("Formula must be specified for mixmeta") } else {
+      if (is.null(x.name)) {
+        o <- mixmeta::mixmeta(formula = formula, S = ef.v,
+                            data = ef, method = method) } else {
+                              xdat <- subset(dat.imp, select = x.name)
+                              o <- mixmeta::mixmeta(formula = formula, S = ef.v, method = method,
+                                                  data = data.frame(ef, xdat))
+                            }
+
+    } }
+if (func == "metafixed") {
+  o <- metafixed(y = ef, Slist = ef.v)
+  pool <- c("coefficients", "qstat")}
 
 if (func == "meta") {
   pool <- c("coefficients", "Q.stat")
   if("metaSEM" %in% rownames(installed.packages()) == FALSE) {install.packages("metaSEM")}
 if (is.null(x.name)) {
-  o <- metaSEM::meta(y = ef, v = ef.v, data = data.frame(ef,ef.v)) } else {
+  o <- metaSEM::meta(y = ef, v = ef.v,
+                     data = data.frame(ef,ef.v)) } else {
   xdat <- subset(dat.imp, select = x.name)
   o <- metaSEM::meta(y = ef, v = ef.v, x = xdat,
             data = data.frame(ef, ef.v, xdat))
@@ -168,7 +192,9 @@ if (!is.null(pool.seq)){
 
 
 class(out) <- class(result) <- "metami"
-cat(paste("pooled results from", M, "imputations for missing values in", paste(setdiff(colnames(dat), cmplt), collapse = ","), "\n"))
+cat(paste("pooled results from", M,
+          "imputations for missing values in",
+          paste(setdiff(colnames(dat), cmplt), collapse = ","), "\n"))
 print(summary(out))
 result
 }
@@ -177,7 +203,8 @@ print.summary.metami <- function(x, ...){
   digits = 4
   cat("Fixed-effects coefficients","\n",sep="")
   signif <- symnum(x$coefficients[,"Pr(>|z|)"],corr=FALSE,na=FALSE,
-                   cutpoints=c(0, 0.001,0.01,0.05,0.1,1),symbols=c("***","**","*","."," "))
+                   cutpoints=c(0, 0.001,0.01,0.05,0.1,1),
+                   symbols=c("***","**","*","."," "))
   ###########################################################################
   # Summary table
   #
@@ -214,8 +241,10 @@ maketable <- function(fit, ci.level = 0.95, names){
 }
 rubinpool <- function(o.list, ci.level, names){
   M <- length(o.list)
-  theta <- do.call(rbind, lapply(1:M, function(i){ o.list[[i]]$coefficients[,1]}))
-  vw <- do.call(rbind, lapply(1:M, function(i){ o.list[[i]]$coefficients[,2]}))
+  theta <- do.call(rbind, lapply(1:M, function(i){
+    o.list[[i]]$coefficients[,1]}))
+  vw <- do.call(rbind, lapply(1:M, function(i){
+    o.list[[i]]$coefficients[,2]}))
   Vw <- colMeans(vw^2)
   thetabar <- colMeans(theta)
   Vb <- colSums(theta - matrix(rep(thetabar, M), nrow = M, byrow = TRUE))^2/(M-1)
