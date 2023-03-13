@@ -1,29 +1,28 @@
 \name{md.vcov}
 \alias{md.vcov}
-\title{Covariance matrix for mean differences}
+\title{Computing Variance-Covariance Matrices for Mean Differences}
 \author{
 Min Lu
 }
 \usage{
-md.vcov(r, nt, nc, n_rt = 0, n_rc = 0, sdt, sdc)
+md.vcov(r, nt, nc, n_rt = NA, n_rc = NA, sdt, sdc)
 }
 \description{
-Compute variance-covariance matrix for multivariate meta-analysis when effect size is mean difference.
+The function \code{md.vcov} computes effect sizes and variance-covariance matrix for multivariate meta-analysis when the effect sizes of interest are all measured by mean difference. See \code{\link{mix.vcov}} for effect sizes of the same or different types.
 }
 \arguments{
-\item{r }{A list of correlation coefficient matrices of the outcomes from the studies. r[[k]][i,j] is the correlation coefficient between outcome i and outcome j from study k.}
-\item{nt }{A matrix with sample sizes in the treatment group reporting each of the outcome. nt[i,j] is the sample size from study i reporting the outcome j.}
-\item{nc }{ Defined in a similar way as nt for control group.}
-\item{n_rt }{A list of matrices storing sample sizes in the treatment group reporting pairwised outcomes in the off diagonal elements. n_rt[[k]][i,j] is the sample size reporting both outcome i and outcome j from study k. Diagonal elements of these matrices are not used. The default value is zero, which means the smaller sample size reporting the corresponding two outcomes: i.e. n_rt[[k]][i,j]=min(nt[k,i],nt[k,j]). }
-\item{n_rc }{ Defined in a similar way as n_rt for control group.}
-\item{sdt }{ Sample standard deviation from each of the outcome. sdt[i,j] is the sample standard deviation from study i for outcome j.}
-\item{sdc }{ Defined in a similar way as sdt for control group.}
+\item{r }{ A \eqn{N}-dimensional list of \eqn{p \times p}{p x p} correlation matrices for the \eqn{p} outcomes from the \eqn{N} studies. \code{r[[k]][i,j]} is the correlation coefficient between outcome \eqn{i} and outcome \eqn{j} from study \eqn{k}.}
+\item{nt }{ A \eqn{N \times p}{N x p} matrix storing sample sizes in the treatment group reporting the  \eqn{p} outcomes. \code{nt[i,j]} is the sample size from study \eqn{i} reporting outcome \eqn{j}.}
+\item{nc }{ A matrix defined in a similar way as \code{nt} for the control group.}
+\item{n_rt }{A \eqn{N}-dimensional list of \eqn{p \times p}{p x p} matrices storing sample sizes in the treatment group reporting pairwise outcomes in the off-diagonal elements. \code{n_rt[[k]][i,j]} is the sample size reporting both outcome \eqn{i} and outcome \eqn{j} from study \eqn{k}. Diagonal elements of these matrices are discarded. The default value is \code{NA}, which means that the smaller sample size reporting the corresponding two outcomes is imputed: i.e. \code{n_rt[[k]][i,j]=min(nt[k,i],nt[k,j])}. }
+\item{n_rc }{ A list defined in a similar way as \code{n_rt} for the control group.}
+\item{sdt }{ A \eqn{N \times p}{N x p} matrix storing sample standard deviations for each outcome from treatment group. \code{sdt[i,j]} is the sample standard deviation from study \eqn{i} for outcome \eqn{j}. If outcome \eqn{j} is not continuous such as MD or SMD, NA has to be imputed in the \eqn{j}th column.}
+\item{sdc }{ A matrix defined in a similar way as \code{sdt} for the control group.}
 }
 
 \value{
-    \tabular{ll}{
-  list.md.cov \tab A list of computed variance-covariance matrices.\cr
-  md.cov \tab A matrix whose rows are computed variance-covariance vectors.\cr}}
+\item{list.vcov }{ A \eqn{N}-dimensional list of \eqn{p(p+1)/2 \times p(p+1)/2}{p(p+1)/2 x p(p+1)/2} matrices of computed variance-covariance matrices.}
+\item{matrix.vcov }{ A \eqn{N \times p(p+1)/2}{N x p(p+1)/2} matrix whose rows are computed variance-covariance vectors.}}
 
 
 \references{
@@ -41,20 +40,40 @@ Wei, Y., &  Higgins, J. (2013). Estimating within study covariances in multivari
 r12 <- 0.71
 r.Gee <- lapply(1:nrow(Geeganage2010), function(i){matrix(c(1, r12, r12, 1), 2, 2)})
 
-computvocv <- md.vcov(nt = subset(Geeganage2010, select = c(nt_SBP, nt_DBP)),
+computvcov <- md.vcov(nt = subset(Geeganage2010, select = c(nt_SBP, nt_DBP)),
                     nc = subset(Geeganage2010, select = c(nc_SBP, nc_DBP)),
                     sdt = subset(Geeganage2010, select=c(sdt_SBP, sdt_DBP)),
                     sdc = subset(Geeganage2010, select=c(sdc_SBP, sdc_DBP)),
                     r = r.Gee)
-# name variance-covariance matrix as covars
-covars <- computvocv$md.cov
-
-#####################################################
-# Running random-effects model using package "mvmeta"
-#####################################################
-#library(mvmeta)
-#mvmeta_RE <- summary(mvmeta(cbind(MD_SBP, MD_DBP), S = covars,
+# name variance-covariance matrix as S
+S <- computvcov$matrix.vcov
+## fixed-effect model
+y <- as.data.frame(subset(Geeganage2010, select = c(MD_SBP, MD_DBP)))
+MMA_FE <- summary(metafixed(y = y, Slist = computvcov$list.vcov))
+MMA_FE
+#######################################################################
+# Running random-effects model using package "mixmeta" or "metaSEM"
+#######################################################################
+# Restricted maximum likelihood (REML) estimator from the mixmeta package
+#library(mixmeta)
+#mvmeta_RE <- summary(mixmeta(cbind(MD_SBP, MD_DBP)~1, S = S,
 #                         data = subset(Geeganage2010, select = c(MD_SBP, MD_DBP)),
 #                         method = "reml"))
 #mvmeta_RE
+
+# maximum likelihood estimators from the metaSEM package
+# library(metaSEM)
+# metaSEM_RE <- summary(meta(y = y, v = S))
+# metaSEM_RE
+##############################################################
+# Plotting the result:
+##############################################################
+# obj <- MMA_FE
+# obj <- mvmeta_RE
+# obj <- metaSEM_RE
+
+# plotCI(y = y, v = computvcov$list.vcov,
+#         name.y = c("MD_SBP", "MD_DBP"), name.study = Geeganage2010$studyID,
+#         y.all = obj$coefficients[,1],
+#         y.all.se = obj$coefficients[,2])
 }
