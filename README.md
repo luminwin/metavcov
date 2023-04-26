@@ -15,4 +15,8 @@ Collection of functions to compute covariances for different effect sizes, data 
 
 2021-08-21: release version 2.1
 
+2022-10-07: update [vignettes](https://luminwin.github.io/metavcov/articles/intro.html)
+
+2023-03-12: release version 2.1.4
+
 <a href="https://luminwin.github.io/metavcov/articles/intro.html"><img src="logo.svg" align="right"  height="100" />
