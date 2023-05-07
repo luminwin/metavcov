@@ -3,7 +3,7 @@
 
 
 <!-- badges: start -->
-[![CRAN status](https://badges.cranchecks.info/worst/dplyr.svg)](https://cran.r-project.org/web/checks/check_results_metavcov.html)
+[comment]: <>[![CRAN status](https://badges.cranchecks.info/worst/dplyr.svg)](https://cran.r-project.org/web/checks/check_results_metavcov.html)
 [![CRAN version](https://www.r-pkg.org/badges/version/metavcov)](https://cran.r-project.org/web/packages/metavcov/index.html)
 [![CRAN release date](https://www.r-pkg.org/badges/last-release/metavcov)](https://cran.r-project.org/web/packages/metavcov/index.html)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/metavcov)](https://cran.r-project.org/web/packages/metavcov/index.html)
