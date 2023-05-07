@@ -115,13 +115,11 @@ library(mixmeta)
 S <- computvcov$matrix.vcov
 MMA_FE <- summary(mixmeta(cbind(C1, C2, C3, C4, C5, C6)~1,
                             S = S, data = y, method = "fixed"))
-## After the homogeneity test, a significance level of 0.05 was used for 
-## the above analysis to reject the null hypothesis. 
-## Therefore, a random effect model is more appropriate.
+## In most cases, a random effect model is more appropriate.
 
 #######################################################################
-#  Step 2: Random Effect Meta-Analysis with the package mixmeta or metaSEM
-#  Example 1: Correlation Coefficients with mixmeta() or meta()
+#  Step 2: Random Effect Meta-Analysis with the package mixmeta or metaSEM 
+#  Example 1: Correlation Coefficients with mixmeta(), meta(), or rml()
 #
 #######################################################################
 
@@ -135,15 +133,22 @@ summary(mixmeta(cbind(C1, C2, C3, C4, C5, C6)~ p_male,
                       method = "reml"))
 
 library(metaSEM)
-MMA_RE <- summary(meta(y = y, v = S, data = data.frame(y,S))	)
+# For the maximum likelihood (ML) estimation method
+summary(meta(y = y, v = S, data = data.frame(y,S))	)
+# For the restricted maximum likelihood (REML) estimation method
+# summary(reml(y = y, v = S, data = data.frame(y,S))	)
+
+dat <- escalc(measure="OR", ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg)
+
 ## meta-regression
 summary(meta(y = y, v = S, data = data.frame(y, S, p_male = Craft2003$p_male)))
+# summary(reml(y = y, v = S, data = data.frame(y, S, p_male = Craft2003$p_male)))
 #######################################################################
 #  Step 3: Visualization with the package metavcov
 #  Example 1: Visualizing Correlation Coefficients with plotCI()
 #
 #######################################################################
-obj <- MMA_FE
+obj <- MMA_RE
 #pdf("CI.pdf", width = 4.5, height = 7)
 
 plotCI(y = computvcov$ef, v = computvcov$list.vcov,
@@ -355,9 +360,6 @@ MMA_FE <- summary(mixmeta(cbind(SBP,DBP)~1,
                           S = S, data = y, method = "fixed"))
 MMA_FE
 
-## After the homogeneity test, a significance level of 0.05 was used for 
-## the above analysis to reject the null hypothesis. 
-## Therefore, a fix effect model is appropriate.
 #######################################################################
 #  Step 3: Visualization with the package metavcov
 #######################################################################
